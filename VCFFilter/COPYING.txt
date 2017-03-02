@@ -1,0 +1,80 @@
+https://www.gnu.org/licenses/gpl-3.0.en.html
+
+    VCF.Filter permits graphical filtering of VCF files on cutom annotations and standard VCF fields, pedigree analysis, and cohort searches.
+    Copyright (C) 2017  Heiko Müller
+
+    VCF.Filter is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with VCF.Filter.  If not, see <http://www.gnu.org/licenses/>.
+
+    VCF.Filter  Copyright (C) 2017  Heiko Müller
+    This program comes with ABSOLUTELY NO WARRANTY;
+    This is free software, and you are welcome to redistribute it
+    under certain conditions; 
+    For details interrogate the About section in the File menu.
+
+    Author information:
+    Heiko Müller
+    CeMM and LBI-RUD
+    Lazarettgasse 14, AKH BT 25.3
+    1090 Vienna, Austria 
+    Phone +43-1/40160-70 018
+    Fax +43-1/40160-970 000
+    email: hmueller@cemm.oeaw.ac.at
+
+
+/*
+ * #%L
+ * GeoWE Project
+ * %%
+ * Copyright (C) 2015 - 2016 GeoWE.org
+ * %%
+ * This file is part of GeoWE.org.
+ * 
+ * GeoWE is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * GeoWE is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with GeoWE.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
+
+/*
+#%L
+VCF.Filter permits graphical filtering of VCF files on cutom annotations and standard VCF fields, pedigree analysis, and cohort searches.
+%%
+    Copyright (C) 2017  Heiko Müller
+%%
+
+    VCF.Filter is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with VCF.Filter.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+*/
+
+
