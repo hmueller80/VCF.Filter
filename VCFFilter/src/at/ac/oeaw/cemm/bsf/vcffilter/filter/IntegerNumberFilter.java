@@ -27,7 +27,7 @@
 package at.ac.oeaw.cemm.bsf.vcffilter.filter;
 
 import htsjdk.variant.variantcontext.VariantContext;
-import htsjdk.variant.vcf.VCFInfoHeaderLine;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
 
 /** 
  * Filter for integer number fields.
@@ -64,7 +64,7 @@ public class IntegerNumberFilter extends NumberFilter{
     * @author Heiko Müller
     * @since 1.0
     */
-    public IntegerNumberFilter(VCFInfoHeaderLine header) {
+    public IntegerNumberFilter(VCFCompoundHeaderLine header) {
         super(header);
     }
     

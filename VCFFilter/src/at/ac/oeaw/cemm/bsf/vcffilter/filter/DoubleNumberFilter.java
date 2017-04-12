@@ -27,7 +27,7 @@
 package at.ac.oeaw.cemm.bsf.vcffilter.filter;
 
 import htsjdk.variant.variantcontext.VariantContext;
-import htsjdk.variant.vcf.VCFInfoHeaderLine;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
 
 /** 
  * Filters for real number fields.
@@ -67,7 +67,7 @@ public class DoubleNumberFilter extends NumberFilter {
     * @author Heiko Müller
     * @since 1.0
     */
-    public DoubleNumberFilter(VCFInfoHeaderLine header){
+    public DoubleNumberFilter(VCFCompoundHeaderLine header){
         super(header);  
         criterion1.setToolTipText("<0.5");
         criterion2.setToolTipText(">0.5");

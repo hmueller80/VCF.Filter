@@ -27,7 +27,7 @@
 package at.ac.oeaw.cemm.bsf.vcffilter.filter;
 
 import htsjdk.variant.variantcontext.VariantContext;
-import htsjdk.variant.vcf.VCFInfoHeaderLine;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
 import java.util.List;
 import java.util.Set;
 
@@ -57,7 +57,7 @@ public class StringArrayFilter extends ArrayFilter{
     * @author Heiko Müller
     * @since 1.0
     */
-    public StringArrayFilter(VCFInfoHeaderLine header){
+    public StringArrayFilter(VCFCompoundHeaderLine header){
         super(header);   
         criterion1.setToolTipText("*");
         criterion2.setToolTipText("A*c");

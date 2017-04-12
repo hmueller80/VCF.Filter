@@ -35,6 +35,7 @@ import at.ac.oeaw.cemm.bsf.vcffilter.inheritance.Relationships;
 import htsjdk.samtools.util.CloseableIterator;
 import htsjdk.variant.variantcontext.VariantContext;
 import htsjdk.variant.vcf.VCFFileReader;
+import java.awt.Cursor;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -231,6 +232,9 @@ public class FamilyAnalysisWorker extends VCFFilterWorker{
     public Void doInBackground() throws Exception {
         gui.getFamilyAnalysisRunButton().setEnabled(false);
         progressCounter = 0;
+        Cursor waitCursor = new Cursor(Cursor.WAIT_CURSOR);
+        Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
+        gui.setCursor(waitCursor);
         
         boolean allVCFAreSingleSampleFiles = readSampleNames();        
         if (!allVCFAreSingleSampleFiles) {
@@ -366,6 +370,7 @@ public class FamilyAnalysisWorker extends VCFFilterWorker{
         al = Inheritance.compoundHeterozygous(startsample, affectedVariants, unaffectedVariants, -1, -1, genesymbolField);
         //al = Inheritance.compoundHeterozygous(0, affectedVariants, unaffectedVariants, relationships, genesymbolField);
         al = Inheritance.testGenotypeConsistency(al, relationships.getRelationships().get(startsample));
+        al = Inheritance.removeCompoundHeterozygotesWithGenotypesIdenticalToUnaffected(al,unaffectedVariants,genesymbolField);
         reportAppend(al, affectedVariants, unaffectedVariants, outputArea);
 
         for (int i = 0; i < affectedVCFFiles.length; i++) {           
@@ -414,6 +419,7 @@ public class FamilyAnalysisWorker extends VCFFilterWorker{
         gui.getFamilyAnalysisRunButton().setEnabled(true);
         gui.setFamilyControls(true);
         gui.getFamilyExampleButton().setEnabled(true);
+        gui.setCursor(defaultCursor);
         return null;
     }
     
@@ -465,11 +471,22 @@ public class FamilyAnalysisWorker extends VCFFilterWorker{
             }
             progressCounter++;
             setProgress(progressBar, progressCounter);
-            VCFFileReader vcf = new VCFFileReader(f);
+            VCFFileReader vcf = new VCFFileReader(f);            
+            VariantContext x = vcf.iterator().next();
+            boolean chr = false;
+            if(x != null && x.getContig().toUpperCase().startsWith("CHR")){
+                chr = true;
+            }
             for (GenomicElement g : regions) {
-                CloseableIterator<VariantContext> it = vcf.query(g.CHR, g.START, g.END);
-                ArrayList<VariantContext> temp = filterVCFFileIterator(it);
-                sampleVariants.addAll(temp);
+                if(!chr){
+                    CloseableIterator<VariantContext> it = vcf.query(g.CHR, g.START, g.END);
+                    ArrayList<VariantContext> temp = filterVCFFileIterator(it);
+                    sampleVariants.addAll(temp);
+                }else{
+                    CloseableIterator<VariantContext> it = vcf.query("chr" + g.CHR, g.START, g.END);
+                    ArrayList<VariantContext> temp = filterVCFFileIterator(it);
+                    sampleVariants.addAll(temp);
+                }
             }
             if(qblack != null){
                 sampleVariants = filterOnBlackLists(sampleVariants, qblack);

@@ -27,7 +27,7 @@
 package at.ac.oeaw.cemm.bsf.vcffilter.filter;
 
 import htsjdk.variant.variantcontext.VariantContext;
-import htsjdk.variant.vcf.VCFInfoHeaderLine;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
 
 /** 
  * Filters for flag fields.
@@ -56,7 +56,7 @@ public class FlagFilter extends Filter{
     * @author Heiko Müller
     * @since 1.0
     */
-    public FlagFilter(VCFInfoHeaderLine header){
+    public FlagFilter(VCFCompoundHeaderLine header){
         super(header); 
         criterion1.setToolTipText("true");
         criterion2.setToolTipText("false");

@@ -989,7 +989,7 @@ public class Inheritance {
      * @since 1.0
      */
     public static ArrayList<VariantContext> compoundHeterozygous(int affectedHashIndex, ArrayList<Hashtable<String, VariantContext>> affected, ArrayList<Hashtable<String, VariantContext>> unaffected, int mother, int father, String genesymbolfield) {
-        ArrayList<VariantContext> al = hashToList(affectedHashIndex, affected);
+        ArrayList<VariantContext> al = hashToList(affectedHashIndex, affected);       
         return compoundHeterozygous(al, affected, unaffected, mother, father, genesymbolfield);
     }
 
@@ -1043,7 +1043,7 @@ public class Inheritance {
     private static ArrayList<VariantContext> compoundHeterozygous(ArrayList<VariantContext> candidates, ArrayList<Hashtable<String, VariantContext>> affected, String genesymbolfield) {
         ArrayList<VariantContext> result = findHeterozygotesInAllAffectedIndividuals(candidates, affected);
         result = removeSingleHeterozygotesPerGene(result, genesymbolfield);
-        return null;
+        return result;
     }
 
     private static ArrayList<VariantContext> compoundHeterozygous(ArrayList<VariantContext> candidates, ArrayList<Hashtable<String, VariantContext>> affected, ArrayList<Hashtable<String, VariantContext>> unaffected, String genesymbolfield) {
@@ -1186,7 +1186,7 @@ public class Inheritance {
         return result;
     }
 
-    private static ArrayList<VariantContext> removeCompoundHeterozygotesWithGenotypesIdenticalToUnaffected(ArrayList<VariantContext> candidates, ArrayList<Hashtable<String, VariantContext>> unaffected, String genesymbolfield) {
+    public static ArrayList<VariantContext> removeCompoundHeterozygotesWithGenotypesIdenticalToUnaffected(ArrayList<VariantContext> candidates, ArrayList<Hashtable<String, VariantContext>> unaffected, String genesymbolfield) {
         Hashtable<String, Hashtable<String, VariantContext>> counts = new Hashtable<String, Hashtable<String, VariantContext>>();
         for (VariantContext v : candidates) {
             String gene = v.getAttribute(genesymbolfield).toString();

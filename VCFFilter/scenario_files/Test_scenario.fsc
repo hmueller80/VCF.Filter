@@ -1,0 +1,4 @@
+Filter id:	SNPEFF_IMPACT	AND NOT:	true	criterion1:	LOW	criterion2:	MODIFIER	criterion3:	
+Filter id:	SNPEFF_GENE_NAME	AND NOT:	false	criterion1:	*	criterion2:		criterion3:	
+Filter id:	db_snp.CAF	AND NOT:	false	criterion1:	<0.01	criterion2:	=0.01	criterion3:	NA
+Filter id:	CHROM	AND NOT:	true	criterion1:	GL*	criterion2:		criterion3:	

@@ -69,5 +69,5 @@ public class FormatFields implements FormatField{
             return "\t";
         }
     }
-
+    
 }

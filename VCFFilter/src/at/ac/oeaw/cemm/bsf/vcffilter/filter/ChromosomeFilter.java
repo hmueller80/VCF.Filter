@@ -27,7 +27,7 @@
 package at.ac.oeaw.cemm.bsf.vcffilter.filter;
 
 import htsjdk.variant.variantcontext.VariantContext;
-import htsjdk.variant.vcf.VCFInfoHeaderLine;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
 
 /** 
  * Filters for chromosomes (contigs).
@@ -50,6 +50,8 @@ public class ChromosomeFilter extends StringFilter{
     }
     */
     
+    //private boolean VCFhasChrString = false;
+    
     /**
      * Creates new ChromosomeFilter.
      *
@@ -57,10 +59,10 @@ public class ChromosomeFilter extends StringFilter{
      * @author Heiko Müller
      * @since 1.0
      */
-    public ChromosomeFilter(VCFInfoHeaderLine header){
+    public ChromosomeFilter(VCFCompoundHeaderLine header){
         super(header);
-        criterion1.setToolTipText("3");
-        criterion2.setToolTipText("X");
+        criterion1.setToolTipText("*20");
+        criterion2.setToolTipText("chrX");
         criterion2.setToolTipText("GL*");
     }
     
@@ -94,20 +96,31 @@ public class ChromosomeFilter extends StringFilter{
             return false;
         }
         
-        if(predicate.toUpperCase().startsWith("CHR") && !attribute.toUpperCase().startsWith("CHR")){
-            predicate = predicate.substring(3);
+        if(predicate.contains("*")){
+            String substring = "";
+            if(predicate.startsWith("*")){
+                substring = predicate.substring(1);
+            }else{
+                substring = predicate.substring(0, predicate.indexOf("*"));
+            }            
+            if(attribute.contains(substring)){
+                return true;
+            }else{
+                return false;
+            }   
+        }else{        
+            if(predicate.toUpperCase().startsWith("CHR") && !attribute.toUpperCase().startsWith("CHR")){
+                predicate = predicate.substring(3);
+            }
+
+            if(!predicate.toUpperCase().startsWith("CHR") && attribute.toUpperCase().startsWith("CHR")){
+                predicate = "CHR" + predicate;
+            }
         }
         
         if(attribute.equals(predicate)){
             return true;
-        }else if(predicate.contains("*")){
-            String substring = predicate.substring(0, predicate.indexOf("*"));
-            if(attribute.startsWith(substring)){
-                return true;
-            }else{
-                return false;
-            }            
-        }else{
+        }else {
             return false;
         }
     }

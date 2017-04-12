@@ -707,7 +707,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
         frame.requestFocusInWindow();
         frame.setVisible(true);
         
-        ExampleFileFilter pngFilter = new ExampleFileFilter(new String[]{"jpg", "jpeg"}, "Save image");
+        ExampleFileFilter pngFilter = new ExampleFileFilter(new String[]{"jpg", "jpeg"}, "jpg image");
         jFileChooser1.addChoosableFileFilter(pngFilter);
         jFileChooser1.setAcceptAllFileFilterUsed(false);
         jFileChooser1.addActionListener(new java.awt.event.ActionListener() {

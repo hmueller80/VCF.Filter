@@ -36,6 +36,7 @@ import htsjdk.samtools.util.CloseableIterator;
 import htsjdk.variant.variantcontext.VariantContext;
 import htsjdk.variant.vcf.VCFContigHeaderLine;
 import htsjdk.variant.vcf.VCFFileReader;
+import java.awt.Cursor;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -135,6 +136,9 @@ public class FilterWorker extends VCFFilterWorker {
     @Override
     public Void doInBackground() throws Exception {
         gui.getFilterRunButton().setEnabled(false);
+        Cursor waitCursor = new Cursor(Cursor.WAIT_CURSOR);
+        Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
+        gui.setCursor(waitCursor);
         int progressCounter = 0;
         reportSettings(outputArea);    
         ArrayList<VariantContext> candidates = new ArrayList<VariantContext>();
@@ -171,6 +175,7 @@ public class FilterWorker extends VCFFilterWorker {
             h.show();
         }
         gui.getExampleButton().setEnabled(true);
+        gui.setCursor(defaultCursor);
         return null;
     }
 
@@ -185,12 +190,22 @@ public class FilterWorker extends VCFFilterWorker {
             }
             progressCounter++;
             setProgress(progressBar, progressCounter);
-            VCFFileReader vcf = new VCFFileReader(f);            
-            for (GenomicElement g : regions) { 
+            VCFFileReader vcf = new VCFFileReader(f); 
+            VariantContext x = vcf.iterator().next();
+            boolean chr = false;
+            if(x != null && x.getContig().toUpperCase().startsWith("CHR")){
+                chr = true;
+            }
+            for (GenomicElement g : regions) {                 
                 ArrayList<VariantContext> temp = null;
                 try{
-                    CloseableIterator<VariantContext> it = vcf.query(g.CHR, g.START, g.END);
-                    temp = filterVCFFileIterator(it);
+                    if(!chr){
+                        CloseableIterator<VariantContext> it = vcf.query(g.CHR, g.START, g.END);
+                        temp = filterVCFFileIterator(it);
+                    }else{                    
+                        CloseableIterator<VariantContext> it = vcf.query("chr" + g.CHR, g.START, g.END);
+                        temp = filterVCFFileIterator(it);
+                    }
                 //}catch(TribbleException te){    
                 }catch(Exception te){    
                     te.printStackTrace();
@@ -200,7 +215,7 @@ public class FilterWorker extends VCFFilterWorker {
                 if(result.size() + temp.size() < outputlimit){
                     result.addAll(temp);
                 }else{
-                    new Warning(gui, "More than " + outputlimit + " (outputlimit) variants found. Output will be incomplete.");
+                    new Warning(gui, "More than " + outputlimit + " (outputlimit) variants found. Output will be incomplete. To increase the output limit go to File -> Preferences -> Output limit or use more stringent filters.");
                     result.addAll(temp);
                     return result;
                 }
@@ -228,7 +243,7 @@ public class FilterWorker extends VCFFilterWorker {
             //}catch(TribbleException te){
             }catch(Exception te){
                 te.printStackTrace();
-                new Warning(gui, te.getMessage());                
+                new Warning(gui, "Problem iterating over variants " + te.getMessage());                
                 return new ArrayList<VariantContext>();
             }
             if(result.size() + temp.size() < outputlimit){

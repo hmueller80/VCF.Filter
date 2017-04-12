@@ -28,7 +28,7 @@ package at.ac.oeaw.cemm.bsf.vcffilter.filter;
 
 import htsjdk.variant.variantcontext.Allele;
 import htsjdk.variant.variantcontext.VariantContext;
-import htsjdk.variant.vcf.VCFInfoHeaderLine;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +71,7 @@ public abstract class ArrayFilter extends Filter {
     * @author Heiko Müller
     * @since 1.0
     */
-    public ArrayFilter(VCFInfoHeaderLine header) {
+    public ArrayFilter(VCFCompoundHeaderLine header) {
         super(header);
     }
 

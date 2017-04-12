@@ -27,7 +27,7 @@
 package at.ac.oeaw.cemm.bsf.vcffilter.filter;
 
 import htsjdk.variant.variantcontext.VariantContext;
-import htsjdk.variant.vcf.VCFInfoHeaderLine;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
 
 /** 
  * Filters for default ID field (dbSNP rs12345).
@@ -51,7 +51,7 @@ public class IDFilter extends StringFilter{
     * @author Heiko Müller
     * @since 1.0
     */
-    public IDFilter(VCFInfoHeaderLine header){
+    public IDFilter(VCFCompoundHeaderLine header){
         super(header);   
         criterion1.setToolTipText("rs*");
         criterion2.setToolTipText("rs12345");
@@ -96,7 +96,7 @@ public class IDFilter extends StringFilter{
         }else if(predicate.contains("*")){
             String start = predicate.substring(0, predicate.indexOf("*"));
             String end = predicate.substring(predicate.indexOf("*") + 1, predicate.length());
-            if(attribute.startsWith(start) && attribute.endsWith(end)){
+            if(attribute.contains(start) && attribute.contains(end)){
                 return true;
             }
         }else{

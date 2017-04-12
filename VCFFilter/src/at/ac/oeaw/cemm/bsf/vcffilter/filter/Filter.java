@@ -27,10 +27,10 @@
 package at.ac.oeaw.cemm.bsf.vcffilter.filter;
 
 import at.ac.oeaw.cemm.bsf.vcffilter.VCFFilter;
+import at.ac.oeaw.cemm.bsf.vcffilter.Warning;
 import htsjdk.variant.variantcontext.VariantContext;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
 import htsjdk.variant.vcf.VCFHeaderLine;
-import htsjdk.variant.vcf.VCFInfoHeaderLine;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.JButton;
@@ -204,11 +204,11 @@ public abstract class Filter extends JPanel{
     * @author Heiko Müller
     * @since 1.0
     */
-    public Filter(VCFInfoHeaderLine header){
+    public Filter(VCFCompoundHeaderLine header){
         Headerline = header.toString();
         //INFO=<ID=exac.AN_CONSANGUINEOUS,Number=1,Type=String,Description="Allele number among individuals with F > 0.05">
-        if(header.getKey().startsWith("INFO")){
-            HeaderlineType = "INFO";
+        if(header.getKey().startsWith("INFO") || header.getKey().startsWith("FORMAT")){
+            HeaderlineType = header.getKey();
             ID = header.getID();        
             Number = header.getValue();
             Type = header.getType().toString();
@@ -415,6 +415,7 @@ public abstract class Filter extends JPanel{
     protected void criterion1FocusLost(java.awt.event.FocusEvent evt) {                                      
         setPredicate1();
         setIDLabelState();
+        testOperator(criterion1.getText());
     }
     
     /**
@@ -427,6 +428,7 @@ public abstract class Filter extends JPanel{
     protected void criterion2FocusLost(java.awt.event.FocusEvent evt) {                                      
         setPredicate2();
         setIDLabelState();
+        testOperator(criterion2.getText());
     }
     
     /**
@@ -439,6 +441,7 @@ public abstract class Filter extends JPanel{
     protected void criterion3FocusLost(java.awt.event.FocusEvent evt) {                                      
         setPredicate3();
         setIDLabelState();
+        testOperator(criterion3.getText());
     }
     
     /**
@@ -825,6 +828,12 @@ public abstract class Filter extends JPanel{
             idlabel.setEnabled(true);
         }else{
             idlabel.setEnabled(false);
+        }
+    }
+    
+    public void testOperator(String s){
+        if(s.startsWith(">=") || s.startsWith("<=")){
+            new Warning(gui, "Illegal operator detected.");
         }
     }
     

@@ -356,8 +356,8 @@ public abstract class VCFFilterWorker extends SwingWorker{
         if(q != null){
             candidates.sort(new VariantContextComparator());
             ArrayList<VariantContext> result = new ArrayList<VariantContext>();                  
-            for(VariantContext vc : candidates){
-                if(q.match(new GenomicElement(vc))){
+            for(VariantContext vc : candidates){                
+                if(q.match(new GenomicElement(vc))){                    
                     result.add(vc);
                 }
             } 
@@ -404,17 +404,49 @@ public abstract class VCFFilterWorker extends SwingWorker{
             return candidates;
         }
         ArrayList<VariantContext> result = new ArrayList<VariantContext>();
-        for(VariantContext v : candidates){
-            List<String> keys = getExacVariantFormat(v);
-            for(String s : keys){
-                VariantRecurrence r = recurrenceHash.get(s);
-                if(r != null){
-                    if(Integer.parseInt(r.getFreq()) <= recurrenceCutoff){
+        if(gui.getRecurrenceType().equals("total")){
+            for(VariantContext v : candidates){
+                List<String> keys = getExacVariantFormat(v);
+                for(String s : keys){
+                    VariantRecurrence r = recurrenceHash.get(s);
+                    if(r != null){
+                        if(Integer.parseInt(r.getFreq()) <= recurrenceCutoff){
+                            result.add(v);
+                            break;
+                        }
+                    }else{
                         result.add(v);
-                        break;
                     }
-                }else{
-                    result.add(v);
+                }
+            }
+        }else if(gui.getRecurrenceType().equals("het")){
+            for(VariantContext v : candidates){
+                List<String> keys = getExacVariantFormat(v);
+                for(String s : keys){
+                    VariantRecurrence r = recurrenceHash.get(s);
+                    if(r != null){
+                        if(Integer.parseInt(r.getFreqHet()) <= recurrenceCutoff){
+                            result.add(v);
+                            break;
+                        }
+                    }else{
+                        result.add(v);
+                    }
+                }
+            }
+        }else if(gui.getRecurrenceType().equals("hom")){
+            for(VariantContext v : candidates){
+                List<String> keys = getExacVariantFormat(v);
+                for(String s : keys){
+                    VariantRecurrence r = recurrenceHash.get(s);
+                    if(r != null){
+                        if(Integer.parseInt(r.getFreqHom()) <= recurrenceCutoff){
+                            result.add(v);
+                            break;
+                        }
+                    }else{
+                        result.add(v);
+                    }
                 }
             }
         }
@@ -457,7 +489,8 @@ public abstract class VCFFilterWorker extends SwingWorker{
                 }    
             }
         }catch(Exception e){
-            new Warning(gui, e.getMessage());            
+            new Warning(gui, "filterVCFFileIterator had a problem " + e.getMessage());   
+            e.printStackTrace();
         }
         return result;
     }

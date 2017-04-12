@@ -27,7 +27,7 @@
 package at.ac.oeaw.cemm.bsf.vcffilter.filter;
 
 import htsjdk.variant.variantcontext.VariantContext;
-import htsjdk.variant.vcf.VCFInfoHeaderLine;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
 
 
 /** 
@@ -61,7 +61,7 @@ public class FilterFilter extends StringFilter{
     * @author Heiko Müller
     * @since 1.0
     */
-    public FilterFilter(VCFInfoHeaderLine header){
+    public FilterFilter(VCFCompoundHeaderLine header){
         super(header);   
         criterion1.setToolTipText("VQSRTranche*");
         criterion2.setToolTipText("VQSRTRANCHESNP99.90TO100.00");
@@ -83,7 +83,7 @@ public class FilterFilter extends StringFilter{
         }
         String attribute = o.toString().toUpperCase();
         if(attribute.startsWith("[")){
-            attribute = attribute.substring(1);
+            attribute = attribute.substring(1, attribute.length() - 1);
         }        
         if(testPredicate(attribute, predicate1) || testPredicate(attribute, predicate2) || testPredicate(attribute, predicate3)){
             return true;
@@ -117,7 +117,7 @@ public class FilterFilter extends StringFilter{
         }else if(predicate.contains("*")){
             String start = predicate.substring(0, predicate.indexOf("*"));
             String end = predicate.substring(predicate.indexOf("*") + 1, predicate.length());
-            if(attribute.startsWith(start) && attribute.endsWith(end)){
+            if(attribute.contains(start) && attribute.contains(end)){
                 return true;
             }
         }else{

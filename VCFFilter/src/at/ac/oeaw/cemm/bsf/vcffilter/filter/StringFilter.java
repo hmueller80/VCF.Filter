@@ -27,7 +27,7 @@
 package at.ac.oeaw.cemm.bsf.vcffilter.filter;
 
 import htsjdk.variant.variantcontext.VariantContext;
-import htsjdk.variant.vcf.VCFInfoHeaderLine;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
 
 /** 
  * Filter for String fields.
@@ -55,7 +55,7 @@ public class StringFilter extends Filter{
     * @author Heiko Müller
     * @since 1.0
     */
-    public StringFilter(VCFInfoHeaderLine header){
+    public StringFilter(VCFCompoundHeaderLine header){
         super(header);   
         criterion1.setToolTipText("*");
         criterion2.setToolTipText("A*c");
@@ -101,8 +101,8 @@ public class StringFilter extends Filter{
         }else if(predicate.contains("*")){
             String start = predicate.substring(0, predicate.indexOf("*"));
             String end = predicate.substring(predicate.indexOf("*") + 1, predicate.length());
-            System.out.println(end);
-            if(attribute.startsWith(start) && attribute.endsWith(end)){
+            //System.out.println(end);
+            if(attribute.contains(start) && attribute.contains(end)){
                 return true;
             }
         }else{

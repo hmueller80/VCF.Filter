@@ -29,6 +29,7 @@ package at.ac.oeaw.cemm.bsf.vcffilter.inheritance;
 import htsjdk.variant.variantcontext.VariantContext;
 import java.io.File;
 import java.util.Hashtable;
+import javax.swing.JComboBox;
 
 /**
  * A class for defining the family relationships of an individual (mother, father, male/female).
@@ -467,6 +468,14 @@ public class Relationship extends javax.swing.JPanel {
     }//GEN-LAST:event_jRadioButton2ItemStateChanged
 
 
+    public JComboBox getMotherFileDropdownList(){
+        return jComboBox1;
+    }
+    
+    public JComboBox getFatherFileDropdownList(){
+        return jComboBox2;
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox jComboBox1;

@@ -215,7 +215,7 @@ public class StartupWizard extends javax.swing.JDialog {
     */
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        ExampleFileFilter vcfFilter = new ExampleFileFilter(new String[]{"vcf", "gz"}, "Load vcf files");
+        ExampleFileFilter vcfFilter = new ExampleFileFilter(new String[]{"vcf", "gz"}, "VCF files");
         jFileChooser1.addChoosableFileFilter(vcfFilter);
         jFileChooser1.setAcceptAllFileFilterUsed(false);
         String userdir = getUserDir();

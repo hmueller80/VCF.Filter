@@ -72,7 +72,7 @@ public class GenomicElementListParser {
                         //System.out.println(line);
                         if(!line.startsWith("#")){
                             GenomicElement g = new GenomicElement(line, ftr);
-                            if(g.CHR.startsWith("chr")){
+                            if(g.CHR.toUpperCase().startsWith("CHR")){
                                 g.CHR = g.CHR.substring(3);
                             }
                             genomicElements.add(g);
@@ -95,7 +95,7 @@ public class GenomicElementListParser {
                             line = parsePlinkLine(line);
                             //System.out.println(line);
                             GenomicElement g = new GenomicElement(line, ftr);
-                            if(g.CHR.startsWith("chr")){
+                            if(g.CHR.toUpperCase().startsWith("CHR")){
                                 g.CHR = g.CHR.substring(3);
                             }
                             genomicElements.add(g);
@@ -133,7 +133,7 @@ public class GenomicElementListParser {
                         //System.out.println(line);
                         if(!line.startsWith("#")){
                             GenomicElement g = new GenomicElement(line, ftr, gui);
-                            if(g.CHR.startsWith("chr")){
+                            if(g.CHR.toUpperCase().startsWith("CHR")){
                                 g.CHR = g.CHR.substring(3);
                             }
                             genomicElements.add(g);
@@ -157,7 +157,7 @@ public class GenomicElementListParser {
                             line = parsePlinkLine(line);
                             //System.out.println(line);
                             GenomicElement g = new GenomicElement(line, ftr, gui);
-                            if(g.CHR.startsWith("chr")){
+                            if(g.CHR.toUpperCase().startsWith("CHR")){
                                 g.CHR = g.CHR.substring(3);
                             }
                             genomicElements.add(g);

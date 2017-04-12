@@ -26,7 +26,7 @@
 */
 package at.ac.oeaw.cemm.bsf.vcffilter.filter;
 
-import htsjdk.variant.vcf.VCFInfoHeaderLine;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
 
 /** 
  * Abstract Filter for number fields.
@@ -50,7 +50,7 @@ public abstract class NumberFilter extends Filter{
     * @author Heiko Müller
     * @since 1.0
     */
-    public NumberFilter(VCFInfoHeaderLine header){
+    public NumberFilter(VCFCompoundHeaderLine header){
         super(header);  
         criterion1.setToolTipText("<1");
         criterion2.setToolTipText(">1");

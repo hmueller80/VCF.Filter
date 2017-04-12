@@ -121,7 +121,12 @@ public class Hyperlink extends JPanel implements FormatField, Comparable{
         } else {
             String key = (String)jComboBox1.getSelectedItem();
             if(key.equals("ID")){
-                return left + vc.getID() + right + "\t";
+                String rs = vc.getID();
+                if(!rs.startsWith("rs")){
+                    return "\t";
+                }else{
+                    return left + vc.getID() + right + "\t";
+                }
             }
             return "\t";
         }

@@ -243,6 +243,10 @@ public class GenomicElement implements Serializable{
     public GenomicElement(VariantContext vc){
         ID = "";
         CHR = vc.getContig();
+        //System.out.println(CHR);
+        if(CHR.toUpperCase().startsWith("CHR")){
+            CHR = CHR.substring(3);
+        }
         STRAND = "+";
         START = vc.getStart();
         END = vc.getEnd();

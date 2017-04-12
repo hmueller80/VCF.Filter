@@ -27,7 +27,7 @@
 package at.ac.oeaw.cemm.bsf.vcffilter.filter;
 
 import htsjdk.variant.variantcontext.VariantContext;
-import htsjdk.variant.vcf.VCFInfoHeaderLine;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
 
 /** 
  * Filters for default QUAL field (Phred scaled quality).
@@ -51,7 +51,7 @@ public class QualFilter extends DoubleNumberFilter{
     * @author Heiko Müller
     * @since 1.0
     */
-    public QualFilter(VCFInfoHeaderLine header){
+    public QualFilter(VCFCompoundHeaderLine header){
         super(header);   
         criterion1.setToolTipText(">1000");
         criterion2.setToolTipText("=1000");

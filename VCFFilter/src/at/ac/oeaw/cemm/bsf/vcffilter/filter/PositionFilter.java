@@ -27,7 +27,7 @@
 package at.ac.oeaw.cemm.bsf.vcffilter.filter;
 
 import htsjdk.variant.variantcontext.VariantContext;
-import htsjdk.variant.vcf.VCFInfoHeaderLine;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
 
 /** 
  * Filter for variant position.
@@ -57,7 +57,7 @@ public class PositionFilter extends IntegerNumberFilter{
     * @author Heiko Müller
     * @since 1.0
     */
-    public PositionFilter(VCFInfoHeaderLine header) {
+    public PositionFilter(VCFCompoundHeaderLine header) {
         super(header);
     }
     

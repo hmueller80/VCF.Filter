@@ -61,7 +61,7 @@ public class FormatFieldGenotype extends FormatFields {
 
     @Override
     public String getHeader() {
-        return "sample\tgenotype\talleleIndices\tDP\tGQ\t";
+        return "sample\tgenotype\talleleIndices\tDP\tGQ\tAD\tPL\t";
     }
 
     @Override
@@ -83,9 +83,15 @@ public class FormatFieldGenotype extends FormatFields {
 
                 sb.append(vc.getGenotype(0).getGQ());
                 sb.append("\t");
+                
+                sb.append(intArrayToString(vc.getGenotype(0).getAD()));
+                sb.append("\t");
+                    
+                sb.append(intArrayToString(vc.getGenotype(0).getPL()));
+                sb.append("\t");
                 return sb.toString();
             }else{
-                sb.append("\t\t\t\t\t");
+                sb.append("\t\t\t\t\t\t\t");
                 return sb.toString();
             }
         }else if(vc.getSampleNames().size() > 1){
@@ -96,6 +102,8 @@ public class FormatFieldGenotype extends FormatFields {
             StringBuilder alleleindices = new StringBuilder();
             StringBuilder depth = new StringBuilder();
             StringBuilder gq = new StringBuilder();
+            StringBuilder ad = new StringBuilder();
+            StringBuilder pl = new StringBuilder();
             while(it.hasNext()){
                 Genotype gt = it.next();
                 if(!gt.getGenotypeString().equals("./.")){
@@ -104,6 +112,8 @@ public class FormatFieldGenotype extends FormatFields {
                     alleleindices.append(vc.getAlleleIndices(gt.getAlleles()) + ";");
                     depth.append(gt.getDP() + ";");
                     gq.append(gt.getGQ() + ";");
+                    ad.append(intArrayToString(gt.getAD()) + ";");
+                    pl.append(intArrayToString(gt.getPL()) + ";");
                 }
             }
             sb.append(samples.toString() + "\t");
@@ -111,9 +121,11 @@ public class FormatFieldGenotype extends FormatFields {
             sb.append(alleleindices.toString() + "\t");
             sb.append(depth.toString() + "\t");
             sb.append(gq.toString() + "\t");
+            sb.append(ad.toString() + "\t");
+            sb.append(pl.toString() + "\t");
             return sb.toString();
         }else{
-            sb.append("\t\t\t\t\t");
+            sb.append("\t\t\t\t\t\t\t");
             return sb.toString();
         }
     }
@@ -148,8 +160,14 @@ public class FormatFieldGenotype extends FormatFields {
 
                     sb.append(v.getGenotype(0).getGQ());
                     sb.append("\t");
+                    
+                    sb.append(intArrayToString(v.getGenotype(0).getAD()));
+                    sb.append("\t");
+                    
+                    sb.append(intArrayToString(v.getGenotype(0).getPL()));
+                    sb.append("\t");
                 }else{
-                    sb.append("\t\t\t\t\t");
+                    sb.append("\t\t\t\t\t\t\t");
                 }
             }
             for(Hashtable<String, VariantContext> ht : unaffectedVariants){
@@ -168,19 +186,41 @@ public class FormatFieldGenotype extends FormatFields {
 
                     sb.append(v.getGenotype(0).getGQ());
                     sb.append("\t");
+                    
+                    sb.append(intArrayToString(v.getGenotype(0).getAD()));
+                    sb.append("\t");
+                    
+                    sb.append(intArrayToString(v.getGenotype(0).getPL()));
+                    sb.append("\t");
                 }else{
-                    sb.append("\t\t\t\t\t");
+                    sb.append("\t\t\t\t\t\t\t");
                 }
             }
             return sb.toString();
         }else{
             for(Hashtable<String, VariantContext> ht : affectedVariants){                 
-                    sb.append("\t\t\t\t\t");                
+                    sb.append("\t\t\t\t\t\t\t");                
             }
             for(Hashtable<String, VariantContext> ht : unaffectedVariants){                
-                    sb.append("\t\t\t\t\t");                
+                    sb.append("\t\t\t\t\t\t\t");                
             }
             return sb.toString();
         }
+    }
+    
+    private String intArrayToString(int[] a){
+        if(a == null){
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for(int i : a){
+            sb.append("" + i + ",");
+        }
+        sb.append("]");
+        String result = sb.toString();
+        result = result.replace(",]", "]");
+        return result;
+        
     }
 }

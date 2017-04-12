@@ -28,9 +28,13 @@ package at.ac.oeaw.cemm.bsf.vcffilter.filter;
 
 import at.ac.oeaw.cemm.bsf.vcffilter.VCFFilter;
 import at.ac.oeaw.cemm.bsf.vcffilter.preferences.VCFFilterPreferences;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
+import htsjdk.variant.vcf.VCFFormatHeaderLine;
 import htsjdk.variant.vcf.VCFHeaderLineCount;
 import htsjdk.variant.vcf.VCFHeaderLineType;
 import htsjdk.variant.vcf.VCFInfoHeaderLine;
+import htsjdk.variant.vcf.VCFHeaderLine;
+//import htsjdk.variant.vcf.VCFHeaderLineType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -90,6 +94,226 @@ public class FilterFactory {
     }
     
     /**
+     *  Returns the Filter that is appropriate for this VCFCompoundHeaderLine line.
+     * FORMAT and INFO header lines are valid VCFCompoundHeaderLine types. 
+     * For INFO header lines, the attributes to filter on are located in the VariantContext object. 
+     * For FORMAT header lines, the attributes to filter on are located in the 
+     * GenotypesContext object, which is found inside the VariantContext object. 
+     * Therefore, FORMAT filters are restricted to instantiation using VCFFormatHeaderLine objects, 
+     * which is a subclass of VCFCompoundHeaderLine.
+     * 
+     * If the count is a fixed count, return that.  For example, a field with size of 1 in the header returns 1
+     * If the count is of type A, return vc.getNAlleles - 1
+    * If the count is of type G, return the expected number of genotypes given the number of alleles in VC and the
+    * max ploidy among all samples.  Note that if the max ploidy of the VC is 0 (there's no GT information
+    * at all, then implicitly assume diploid samples when computing G values.
+    * int ploidy = vc.GetMaxPloidy(2);
+    * return GenotypeLikelihoods.numLikelihoods(vc.NAlleles, ploidy);
+    * If the count is UNBOUNDED return -1
+     * Get the number of values expected for this header field, given the properties of VariantContext vc
+     *
+     * If the count is a fixed count, return that.  For example, a field with size of 1 in the header returns 1
+     * If the count is of type A, return vc.getNAlleles - 1
+     * If the count is of type R, return vc.getNAlleles
+     * If the count is of type G, return the expected number of genotypes given the number of alleles in VC and the
+     *   max ploidy among all samples.  Note that if the max ploidy of the VC is 0 (there's no GT information
+     *   at all, then implicitly assume diploid samples when computing G values.
+     * If the count is UNBOUNDED return -1
+     *
+     * @param header VCF header line object
+     * @return Filter 
+    */
+    public static Filter getFilter(VCFCompoundHeaderLine header){
+        VCFHeaderLineType type = header.getType();
+        VCFHeaderLineCount count = header.getCountType();
+        //header.
+        if(header instanceof VCFInfoHeaderLine){
+        
+            if(type.equals(VCFHeaderLineType.Integer)){
+                if(count.name().equals(VCFHeaderLineCount.A.name())){
+                    return new IntegerArrayFilter(header);
+                }else if(count.name().equals(VCFHeaderLineCount.G.name())){
+                    IntegerArrayFilter filter = new IntegerArrayFilter(header);
+                    filter.setIsGenotypeArray(true);
+                    return filter;
+                }else if(count.name().equals(VCFHeaderLineCount.INTEGER.name())){
+                    if(header.getID().equals("POS")){
+                        return new PositionFilter(header); 
+                    }else{
+                        return new IntegerNumberFilter(header);
+                    }
+                }else if(count.name().equals(VCFHeaderLineCount.R.name())){
+                    IntegerArrayFilter filter = new IntegerArrayFilter(header);
+                    filter.setArrayContainsRefAllele(true);
+                    return filter;
+                }else if(count.name().equals(VCFHeaderLineCount.UNBOUNDED.name())){
+                    return new IntegerNumberFilter(header);
+                }
+            }else if(type.equals(VCFHeaderLineType.Character)){
+                if(count.name().equals(VCFHeaderLineCount.A.name())){
+                    CharacterArrayFilter filter = new CharacterArrayFilter(header);
+                    filter.setArrayContainsRefAllele(false);
+                    return filter;
+                }else if(count.name().equals(VCFHeaderLineCount.G.name())){
+                    CharacterArrayFilter filter = new CharacterArrayFilter(header);
+                    filter.setIsGenotypeArray(true);
+                    return filter;
+                }else if(count.name().equals(VCFHeaderLineCount.INTEGER.name())){
+                    return new CharacterFilter(header);
+                }else if(count.name().equals(VCFHeaderLineCount.R.name())){
+                    CharacterArrayFilter filter = new CharacterArrayFilter(header);
+                    filter.setArrayContainsRefAllele(true);
+                    return filter;
+                }else if(count.name().equals(VCFHeaderLineCount.UNBOUNDED.name())){
+                    return new CharacterFilter(header);
+                }
+            }else if(type.equals(VCFHeaderLineType.Flag)){
+                if(count.name().equals(VCFHeaderLineCount.A.name())){
+                    return null;
+                }else if(count.name().equals(VCFHeaderLineCount.G.name())){
+                    return null;
+                }else if(count.name().equals(VCFHeaderLineCount.INTEGER.name())){
+                    return new FlagFilter(header);
+                }else if(count.name().equals(VCFHeaderLineCount.R.name())){
+                    return null;
+                }else if(count.name().equals(VCFHeaderLineCount.UNBOUNDED.name())){
+                    return null;
+                }
+            }else if(type.equals(VCFHeaderLineType.Float)){
+                if(count.name().equals(VCFHeaderLineCount.A.name())){
+                    return new DoubleArrayFilter(header);
+                }else if(count.name().equals(VCFHeaderLineCount.G.name())){
+                    DoubleArrayFilter filter = new DoubleArrayFilter(header);
+                    filter.setIsGenotypeArray(true);
+                    return filter;
+                }else if(count.name().equals(VCFHeaderLineCount.INTEGER.name())){
+                    if(header.getID().equals("QUAL")){                            
+                        QualFilter f = new QualFilter(header);                        
+                        return f;
+                    }else{
+                        return new DoubleNumberFilter(header);
+                    }
+                }else if(count.name().equals(VCFHeaderLineCount.R.name())){
+                    DoubleArrayFilter filter = new DoubleArrayFilter(header);
+                    filter.setArrayContainsRefAllele(true);
+                    return filter;
+                }else if(count.name().equals(VCFHeaderLineCount.UNBOUNDED.name())){
+                    return new DoubleNumberFilter(header);
+                }
+            }else if(type.equals(VCFHeaderLineType.String)){
+                if(count.name().equals(VCFHeaderLineCount.A.name())){                
+                     return new StringArrayFilter(header);                
+                }else if(count.name().equals(VCFHeaderLineCount.G.name())){
+                    StringArrayFilter filter = new StringArrayFilter(header);
+                    filter.setIsGenotypeArray(true);
+                    return filter;
+                }else if(count.name().equals(VCFHeaderLineCount.INTEGER.name())){
+                    if(header.getID().equals("CHROM")){                            
+                        ChromosomeFilter f = new ChromosomeFilter(header);                        
+                        return f;
+                    }else if(header.getID().equals("FILTER")){                            
+                        FilterFilter f = new FilterFilter(header);                        
+                        return f;
+                    }else if(header.getID().equals("ID")){                            
+                        IDFilter f = new IDFilter(header);                        
+                        return f;
+                    }else{
+                        return new StringFilter(header);
+                    }
+                }else if(count.name().equals(VCFHeaderLineCount.R.name())){                
+                    StringArrayFilter filter = new StringArrayFilter(header);
+                    filter.setArrayContainsRefAllele(true);
+                    return filter;
+
+                }else if(count.name().equals(VCFHeaderLineCount.UNBOUNDED.name())){
+                    if(header.getID().equals("db_snp.CAF")){
+                        //exception as this field exports allele frequencies in a String data type field
+                        //System.out.println("returning CAF filter");
+                        CAFFilter f = new CAFFilter(header);
+                        f.setArrayContainsRefAllele(true);
+                        return f;
+                    }else{
+                        return new StringFilter(header);
+                    }
+                }
+            }
+        }else//VCFFormatHeaderLine filters
+        {
+            if(type.equals(VCFHeaderLineType.String)){
+                if(count.name().equals(VCFHeaderLineCount.INTEGER.name())){
+                    if(header.getID().equals("GT")){                            
+                        FormatGTFilter f = new FormatGTFilter((VCFFormatHeaderLine)header);                        
+                        return f;
+                    }else{
+                        return new FormatStringFilter((VCFFormatHeaderLine)header);
+                    }
+                }else if(count.name().equals(VCFHeaderLineCount.G.name())){
+                    return null;
+                }else if(count.name().equals(VCFHeaderLineCount.UNBOUNDED.name())){
+                    return null;
+                }else if(count.name().equals(VCFHeaderLineCount.R.name())){
+                    FormatStringArrayFilter filter = new FormatStringArrayFilter((VCFFormatHeaderLine)header);
+                    filter.setArrayContainsRefAllele(true);
+                    return filter;
+                }else if(count.name().equals(VCFHeaderLineCount.A.name())){
+                    FormatStringArrayFilter filter = new FormatStringArrayFilter((VCFFormatHeaderLine)header);
+                    filter.setArrayContainsRefAllele(false);
+                    return filter;
+                }
+            }else if(type.equals(VCFHeaderLineType.Integer)){
+                    if(count.name().equals(VCFHeaderLineCount.INTEGER.name())){
+                        if(header.getID().equals("GQ")){
+                            return new FormatGQFilter((VCFFormatHeaderLine)header); 
+                        }else if(header.getID().equals("DP")){
+                            return new FormatDPFilter((VCFFormatHeaderLine)header);                             
+                        }else{
+                            return new FormatIntegerNumberFilter((VCFFormatHeaderLine)header);
+                        }
+                }else  if(count.name().equals(VCFHeaderLineCount.G.name())){
+                    if(header.getID().equals("PL")){
+                        FormatPLFilter filter = new FormatPLFilter((VCFFormatHeaderLine)header); 
+                        filter.setIsGenotypeArray(true);
+                        return filter;
+                    }                    
+                }else if(count.name().equals(VCFHeaderLineCount.UNBOUNDED.name())){
+                    return null;
+                }else if(count.name().equals(VCFHeaderLineCount.R.name())){
+                    if(header.getID().equals("AD")){
+                        FormatADFilter filter = new FormatADFilter((VCFFormatHeaderLine)header); 
+                        filter.setArrayContainsRefAllele(true);
+                        return filter;
+                    }else{
+                        FormatIntegerArrayFilter filter = new FormatIntegerArrayFilter((VCFFormatHeaderLine)header);
+                        filter.setArrayContainsRefAllele(true);
+                        return filter;
+                    }
+                }else if(count.name().equals(VCFHeaderLineCount.A.name())){                    
+                        FormatIntegerArrayFilter filter = new FormatIntegerArrayFilter((VCFFormatHeaderLine)header);
+                        filter.setArrayContainsRefAllele(false);
+                        return filter;                    
+                }
+            }else if(type.equals(VCFHeaderLineType.Float)){
+                if(count.name().equals(VCFHeaderLineCount.INTEGER.name())){                        
+                    return new FormatFloatNumberFilter((VCFFormatHeaderLine)header);                        
+                }else  if(count.name().equals(VCFHeaderLineCount.G.name())){
+                    return null;                
+                }else if(count.name().equals(VCFHeaderLineCount.UNBOUNDED.name())){
+                    return null;
+                }else if(count.name().equals(VCFHeaderLineCount.R.name())){
+                    FormatArrayFilter f = new FormatFloatArrayFilter((VCFFormatHeaderLine)header);
+                    f.setArrayContainsRefAllele(true);
+                    return f;
+                }else if(count.name().equals(VCFHeaderLineCount.A.name())){                    
+                    FormatArrayFilter f = new FormatFloatArrayFilter((VCFFormatHeaderLine)header);
+                    f.setArrayContainsRefAllele(false);
+                    return f;                     
+                }
+            }
+        }
+        return null;
+    }
+    
+    /**FormatFloatNumberFilter
      *  Returns the Filter that is appropriate for this VCFInfoHeaderLine line.
      * 
      * If the count is a fixed count, return that.  For example, a field with size of 1 in the header returns 1
@@ -113,6 +337,7 @@ public class FilterFactory {
      * @param header VCF header line object
      * @return Filter 
     */
+    /*
     public static Filter getFilter(VCFInfoHeaderLine header){
 
         VCFHeaderLineType type = header.getType();
@@ -228,6 +453,7 @@ public class FilterFactory {
         }
         return null;
     }
+    */
     
     /**
     * Returns Filter according to the provided settings.

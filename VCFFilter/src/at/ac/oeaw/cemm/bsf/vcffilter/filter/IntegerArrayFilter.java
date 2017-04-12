@@ -27,7 +27,7 @@
 package at.ac.oeaw.cemm.bsf.vcffilter.filter;
 
 import htsjdk.variant.variantcontext.VariantContext;
-import htsjdk.variant.vcf.VCFInfoHeaderLine;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
 import java.util.List;
 import java.util.Set;
 
@@ -69,14 +69,14 @@ public class IntegerArrayFilter extends ArrayFilter{
     * @author Heiko Müller
     * @since 1.0
     */
-    public IntegerArrayFilter(VCFInfoHeaderLine header){
+    public IntegerArrayFilter(VCFCompoundHeaderLine header){
         super(header); 
         criterion1.setToolTipText("<1");
         criterion2.setToolTipText(">1");
         criterion3.setToolTipText("=1");
     }
     
-    public boolean passesFilter(VariantContext vc) {        
+    public boolean passesFilter(VariantContext vc) {         
         Object o = vc.getAttribute(ID);
         if (o == null) {
             //System.out.println(ID + " not found");

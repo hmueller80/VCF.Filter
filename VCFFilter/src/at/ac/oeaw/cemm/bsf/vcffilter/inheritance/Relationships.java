@@ -172,7 +172,7 @@ public class Relationships extends javax.swing.JDialog {
             );
             pack();
     }
-    
+       
     /**
     * Centers this frame on the screen according to screen resolution.
     *
@@ -213,6 +213,22 @@ public class Relationships extends javax.swing.JDialog {
             }
         }  
         return null;
+    }    
+    
+    public void removeRelationshipForIndividual(String name){
+        for(int i = 0; i < relationships.size(); i++){
+            Relationship r = relationships.get(i);
+            if(name.equals(r.getIndividual())){
+                relationships.remove(i);
+                break;
+            }
+        }  
+        int gap = 10;
+        for(Relationship rel : relationships){
+            addToLayout(rel, 10, gap, 10, 10);
+            gap = gap + 80;
+        } 
+        //return null;
     }    
      
 

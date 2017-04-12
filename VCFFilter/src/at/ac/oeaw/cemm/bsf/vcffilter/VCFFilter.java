@@ -35,16 +35,19 @@ import at.ac.oeaw.cemm.bsf.vcffilter.filter.Filter;
 import at.ac.oeaw.cemm.bsf.vcffilter.filter.ExampleFileFilter;
 import at.ac.oeaw.cemm.bsf.vcffilter.filter.FilterDefaults;
 import at.ac.oeaw.cemm.bsf.vcffilter.filter.FilterSettings;
+import at.ac.oeaw.cemm.bsf.vcffilter.index.IndexedVCFFileWriter;
 import at.ac.oeaw.cemm.bsf.vcffilter.inheritance.Relationship;
 import at.ac.oeaw.cemm.bsf.vcffilter.inheritance.Relationships;
 import at.ac.oeaw.cemm.bsf.vcffilter.worker.FamilyAnalysisWorker;
 import at.ac.oeaw.cemm.bsf.vcffilter.worker.SearchWorker;
 import htsjdk.variant.variantcontext.VariantContext;
 //import htsjdk.tribble.TribbleException;
-import htsjdk.variant.variantcontext.writer.VariantContextWriter;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
 import htsjdk.variant.vcf.VCFFileReader;
+import htsjdk.variant.vcf.VCFFormatHeaderLine;
 import htsjdk.variant.vcf.VCFInfoHeaderLine;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Point;
@@ -60,10 +63,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -277,6 +277,12 @@ public class VCFFilter extends javax.swing.JFrame {
      * Relationships.
      */ 
     private Relationships relationships;
+    
+    /**
+     * determines what recurrence type to filter on
+     */ 
+    private String recurrenceType = "total";    
+    
 
     /**
      * Creates new form VCFFilter
@@ -357,9 +363,12 @@ public class VCFFilter extends javax.swing.JFrame {
         initFilterTab();        
         initFamilyTab();
         initSearchTab();
-        //icon = new ImageIcon(getClass().getResource("/at/ac/oeaw/cemm/bsf/vcffilter/icon/NCicon.GIF"));
-        icon = new ImageIcon(getClass().getResource("/at/ac/oeaw/cemm/bsf/vcffilter/icon/LogoVCFF.png"));
+        //icon = new ImageIcon(getClass().getResource("/at/ac/oeaw/cemm/bsf/vcffilter/icon/NCicon.GIF"));        
         //icon = new ImageIcon(getClass().getResource("/at/ac/oeaw/cemm/bsf/vcffilter/icon/logoTH.jpg"));
+        
+        icon = new ImageIcon(getClass().getResource("/at/ac/oeaw/cemm/bsf/vcffilter/icon/logoVCFF.png"));
+        //icon = new ImageIcon(getClass().getResource("/at/ac/oeaw/cemm/bsf/vcffilter/icon/VCF_Filter_v3-2_large.png"));
+        
         this.setIconImage(icon.getImage());
         pack();
         centerWindow(this);
@@ -430,21 +439,21 @@ public class VCFFilter extends javax.swing.JFrame {
     * @since 1.0
     */
     private void initFilterTab() {
-        ExampleFileFilter vcfFilter = new ExampleFileFilter(new String[]{"vcf", "gz"}, "Load vcf files");
+        ExampleFileFilter vcfFilter = new ExampleFileFilter(new String[]{"vcf", "gz"}, "VCF files");
         jFileChooser1.addChoosableFileFilter(vcfFilter);
         jFileChooser1.setAcceptAllFileFilterUsed(false);
         jFileChooser14.addChoosableFileFilter(vcfFilter);
         jFileChooser14.setAcceptAllFileFilterUsed(false);
         setVCFDefaultDir(jFileChooser1);
         setVCFDefaultDir(jFileChooser14);        
-        ExampleFileFilter tsvFilter = new ExampleFileFilter(new String[]{"tsv"}, "Load tsv recurrence files");
+        ExampleFileFilter tsvFilter = new ExampleFileFilter(new String[]{"tsv"}, "Recurrence files in tsv format");
         jFileChooser2.addChoosableFileFilter(tsvFilter);
         jFileChooser2.setAcceptAllFileFilterUsed(false);
         jFileChooser17.addChoosableFileFilter(tsvFilter);
         jFileChooser17.setAcceptAllFileFilterUsed(false);
         setRecurrenceDefaultDir(jFileChooser2);
         setRecurrenceDefaultDir(jFileChooser17);
-        ExampleFileFilter bedFilter = new ExampleFileFilter(new String[]{"bed", "hom"}, "Load bed and PLINK hom files");
+        ExampleFileFilter bedFilter = new ExampleFileFilter(new String[]{"bed", "hom"}, "bed and PLINK hom files");
         jFileChooser10.addChoosableFileFilter(bedFilter);
         jFileChooser10.setAcceptAllFileFilterUsed(false);   
         jFileChooser11.addChoosableFileFilter(bedFilter);
@@ -457,21 +466,26 @@ public class VCFFilter extends javax.swing.JFrame {
         setListDefaultDir(jFileChooser11);
         setListDefaultDir(jFileChooser15);
         setListDefaultDir(jFileChooser16);
-        ExampleFileFilter fscFilter = new ExampleFileFilter(new String[]{"fsc"}, "Load filter scenario");
+        ExampleFileFilter fscFilter = new ExampleFileFilter(new String[]{"fsc"}, "Filter scenario");
         jFileChooser12.addChoosableFileFilter(fscFilter);
         jFileChooser12.setAcceptAllFileFilterUsed(false); 
         jFileChooser13.addChoosableFileFilter(fscFilter);
         jFileChooser13.setAcceptAllFileFilterUsed(false);
         setScenarioDefaultDir(jFileChooser12);
         setScenarioDefaultDir(jFileChooser13);   
-        ExampleFileFilter vcfonlyFilter = new ExampleFileFilter(new String[]{"vcf", "gz"}, "Save vcf file");        
+        ExampleFileFilter vcfonlyFilter = new ExampleFileFilter(new String[]{"vcf", "gz"}, "VCF files");        
         jFileChooser9.addChoosableFileFilter(vcfonlyFilter);
         jFileChooser9.setAcceptAllFileFilterUsed(false); 
-        ExampleFileFilter vcfindex = new ExampleFileFilter(new String[]{"vcf"}, "Index vcf file");        
+        ExampleFileFilter vcfindex = new ExampleFileFilter(new String[]{"vcf", "gz"}, "VCF files");        
         jFileChooser26.addChoosableFileFilter(vcfindex);
         jFileChooser26.setAcceptAllFileFilterUsed(false); 
         jFileChooser26.setMultiSelectionEnabled(true);
         setVCFDefaultDir(jFileChooser26);
+        ExampleFileFilter bedFilter2 = new ExampleFileFilter(new String[]{"bed"}, "bed files");
+        jFileChooser27.addChoosableFileFilter(bedFilter2);
+        jFileChooser27.setAcceptAllFileFilterUsed(false); 
+        jFileChooser27.setMultiSelectionEnabled(false);
+        setVCFDefaultDir(jFileChooser27);
         
         setFileChooserDimension(jFileChooser1);
         setFileChooserDimension(jFileChooser14);
@@ -492,10 +506,10 @@ public class VCFFilter extends javax.swing.JFrame {
         buttonGroup1.add(jRadioButton4);        
         jRadioButton1.setSelected(true);
         
-        List<VCFInfoHeaderLine> filtersToLoad = PREFERENCES.getLoadedFilters();
+        List<VCFCompoundHeaderLine> filtersToLoad = PREFERENCES.getLoadedFilters();
         filters = new ArrayList<Filter>();
         int index = 0;
-        for(VCFInfoHeaderLine s : filtersToLoad){
+        for(VCFCompoundHeaderLine s : filtersToLoad){
             Filter f = FilterFactory.getFilter(s);
             setFilterDefaults(f);
             f.setGui(this);
@@ -528,7 +542,7 @@ public class VCFFilter extends javax.swing.JFrame {
     * @since 1.0
     */
     private void initFamilyTab() {
-        ExampleFileFilter vcfFilter = new ExampleFileFilter(new String[]{"vcf", "gz"}, "Load vcf files");
+        ExampleFileFilter vcfFilter = new ExampleFileFilter(new String[]{"vcf", "gz"}, "VCF files");
         jFileChooser4.addChoosableFileFilter(vcfFilter);
         jFileChooser5.addChoosableFileFilter(vcfFilter);
         jFileChooser4.setAcceptAllFileFilterUsed(false);
@@ -542,7 +556,7 @@ public class VCFFilter extends javax.swing.JFrame {
         setVCFDefaultDir(jFileChooser18);
         setVCFDefaultDir(jFileChooser19);
         
-        ExampleFileFilter bedFilter = new ExampleFileFilter(new String[]{"bed", "hom"}, "Load bed and PLINK hom files");
+        ExampleFileFilter bedFilter = new ExampleFileFilter(new String[]{"bed", "hom"}, "bed and PLINK hom files");
         jFileChooser20.addChoosableFileFilter(bedFilter);
         jFileChooser20.setAcceptAllFileFilterUsed(false);   
         jFileChooser21.addChoosableFileFilter(bedFilter);
@@ -550,12 +564,12 @@ public class VCFFilter extends javax.swing.JFrame {
         setListDefaultDir(jFileChooser20);
         setListDefaultDir(jFileChooser21);
         
-        ExampleFileFilter tsvFilter = new ExampleFileFilter(new String[]{"tsv"}, "Load tsv recurrence files");
+        ExampleFileFilter tsvFilter = new ExampleFileFilter(new String[]{"tsv"}, "Recurrence files in tsv");
         jFileChooser22.addChoosableFileFilter(tsvFilter);
         jFileChooser22.setAcceptAllFileFilterUsed(false);
         setRecurrenceDefaultDir(jFileChooser22);
         
-        ExampleFileFilter fscFilter = new ExampleFileFilter(new String[]{"fsc"}, "Load filter scenario");
+        ExampleFileFilter fscFilter = new ExampleFileFilter(new String[]{"fsc"}, "Filter scenario");
         jFileChooser24.addChoosableFileFilter(fscFilter);
         jFileChooser24.setAcceptAllFileFilterUsed(false);  
         jFileChooser25.addChoosableFileFilter(fscFilter);
@@ -573,10 +587,10 @@ public class VCFFilter extends javax.swing.JFrame {
         setFileChooserDimension(jFileChooser24);
         setFileChooserDimension(jFileChooser25);       
         
-        List<VCFInfoHeaderLine> filtersToLoad = PREFERENCES.getLoadedFilters();
+        List<VCFCompoundHeaderLine> filtersToLoad = PREFERENCES.getLoadedFilters();
         familyFilters = new ArrayList<Filter>();
         int idx = 0;
-        for(VCFInfoHeaderLine s : filtersToLoad){
+        for(VCFCompoundHeaderLine s : filtersToLoad){
             Filter f = FilterFactory.getFilter(s);
             f.setIndex(idx);
             f.setGui(this);
@@ -612,7 +626,7 @@ public class VCFFilter extends javax.swing.JFrame {
     * @since 1.0
     */
     private void initSearchTab() {
-        ExampleFileFilter vcfFilter = new ExampleFileFilter(new String[]{"vcf", "gz"}, "Load vcf files");
+        ExampleFileFilter vcfFilter = new ExampleFileFilter(new String[]{"vcf", "gz"}, "VCF files");
         jFileChooser3.addChoosableFileFilter(vcfFilter);
         jFileChooser3.setAcceptAllFileFilterUsed(false);
         jFileChooser23.addChoosableFileFilter(vcfFilter);
@@ -631,8 +645,8 @@ public class VCFFilter extends javax.swing.JFrame {
     * @since 1.0
     */
     private void initAddFilters() {
-        List<VCFInfoHeaderLine> l = PREFERENCES.getAvailableFilters();        
-        for (VCFInfoHeaderLine hl : l) {
+        List<VCFCompoundHeaderLine> l = PREFERENCES.getAvailableFilters();        
+        for (VCFCompoundHeaderLine hl : l) {
             String s = hl.toString();
             if (s.length() > 150) {
                 jComboBox1.addItem(s.substring(0, 150));
@@ -668,8 +682,8 @@ public class VCFFilter extends javax.swing.JFrame {
     * @since 1.0
     */
     private void initAddFamilyFilters() {
-        List<VCFInfoHeaderLine> l = PREFERENCES.getAvailableFilters();        
-        for (VCFInfoHeaderLine hl : l) {
+        List<VCFCompoundHeaderLine> l = PREFERENCES.getAvailableFilters();        
+        for (VCFCompoundHeaderLine hl : l) {
             String s = hl.toString();
             if (s.length() > 150) {
                 jComboBox3.addItem(s.substring(0, 150));
@@ -677,6 +691,7 @@ public class VCFFilter extends javax.swing.JFrame {
                 jComboBox3.addItem(s);
             }
         }
+        //List<VCFFormatHeaderLine> l = PREFERENCES.getAvailableFilters();  
     }
 
     /**
@@ -768,9 +783,11 @@ public class VCFFilter extends javax.swing.JFrame {
         jFileChooser24 = new javax.swing.JFileChooser();
         jFileChooser25 = new javax.swing.JFileChooser();
         jFileChooser26 = new javax.swing.JFileChooser();
+        jFileChooser27 = new javax.swing.JFileChooser();
         jPopupMenu1 = new javax.swing.JPopupMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem44 = new javax.swing.JMenuItem();
         jPopupMenu2 = new javax.swing.JPopupMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
@@ -781,6 +798,9 @@ public class VCFFilter extends javax.swing.JFrame {
         jMenuItem10 = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenuItem11 = new javax.swing.JMenuItem();
+        jSeparator14 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem36 = new javax.swing.JMenuItem();
+        jMenuItem37 = new javax.swing.JMenuItem();
         jPopupMenu5 = new javax.swing.JPopupMenu();
         jMenuItem12 = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
@@ -797,10 +817,16 @@ public class VCFFilter extends javax.swing.JFrame {
         jMenuItem18 = new javax.swing.JMenuItem();
         jSeparator6 = new javax.swing.JPopupMenu.Separator();
         jMenuItem19 = new javax.swing.JMenuItem();
+        jSeparator15 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem38 = new javax.swing.JMenuItem();
+        jMenuItem39 = new javax.swing.JMenuItem();
         jPopupMenu9 = new javax.swing.JPopupMenu();
         jMenuItem20 = new javax.swing.JMenuItem();
         jSeparator7 = new javax.swing.JPopupMenu.Separator();
         jMenuItem21 = new javax.swing.JMenuItem();
+        jSeparator16 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem40 = new javax.swing.JMenuItem();
+        jMenuItem41 = new javax.swing.JMenuItem();
         jPopupMenu10 = new javax.swing.JPopupMenu();
         jMenuItem22 = new javax.swing.JMenuItem();
         jSeparator8 = new javax.swing.JPopupMenu.Separator();
@@ -817,6 +843,9 @@ public class VCFFilter extends javax.swing.JFrame {
         jMenuItem28 = new javax.swing.JMenuItem();
         jSeparator11 = new javax.swing.JPopupMenu.Separator();
         jMenuItem29 = new javax.swing.JMenuItem();
+        jSeparator17 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem42 = new javax.swing.JMenuItem();
+        jMenuItem43 = new javax.swing.JMenuItem();
         jPopupMenu14 = new javax.swing.JPopupMenu();
         jMenuItem30 = new javax.swing.JMenuItem();
         jSeparator12 = new javax.swing.JPopupMenu.Separator();
@@ -852,6 +881,8 @@ public class VCFFilter extends javax.swing.JFrame {
         jRadioButton2 = new javax.swing.JRadioButton();
         jRadioButton4 = new javax.swing.JRadioButton();
         jButton16 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jComboBox7 = new javax.swing.JComboBox();
         jPanel25 = new javax.swing.JPanel();
         jButton21 = new javax.swing.JButton();
         jScrollPane10 = new javax.swing.JScrollPane();
@@ -887,6 +918,7 @@ public class VCFFilter extends javax.swing.JFrame {
         jButton11 = new javax.swing.JButton();
         jScrollPane7 = new javax.swing.JScrollPane();
         jList5 = new javax.swing.JList();
+        jScrollPane9 = new javax.swing.JScrollPane();
         jPanel20 = new javax.swing.JPanel();
         jComboBox5 = new javax.swing.JComboBox();
         jComboBox6 = new javax.swing.JComboBox();
@@ -907,6 +939,8 @@ public class VCFFilter extends javax.swing.JFrame {
         jButton12 = new javax.swing.JButton();
         jButton14 = new javax.swing.JButton();
         jButton25 = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        jComboBox8 = new javax.swing.JComboBox();
         jScrollPane8 = new javax.swing.JScrollPane();
         jTextArea3 = new javax.swing.JTextArea();
         jProgressBar2 = new javax.swing.JProgressBar();
@@ -1100,6 +1134,12 @@ public class VCFFilter extends javax.swing.JFrame {
             }
         });
 
+        jFileChooser27.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jFileChooser27ActionPerformed(evt);
+            }
+        });
+
         jPopupMenu1.setLabel("");
 
         jMenuItem1.setText("Save As");
@@ -1118,6 +1158,14 @@ public class VCFFilter extends javax.swing.JFrame {
             }
         });
         jPopupMenu1.add(jMenuItem2);
+
+        jMenuItem44.setText("Save as pass list");
+        jMenuItem44.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem44ActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(jMenuItem44);
 
         jMenuItem3.setText("Save As");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
@@ -1167,6 +1215,23 @@ public class VCFFilter extends javax.swing.JFrame {
             }
         });
         jPopupMenu4.add(jMenuItem11);
+        jPopupMenu4.add(jSeparator14);
+
+        jMenuItem36.setText("Remove selected files");
+        jMenuItem36.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem36ActionPerformed(evt);
+            }
+        });
+        jPopupMenu4.add(jMenuItem36);
+
+        jMenuItem37.setText("Keep selected files");
+        jMenuItem37.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem37ActionPerformed(evt);
+            }
+        });
+        jPopupMenu4.add(jMenuItem37);
 
         jMenuItem12.setText("Add more");
         jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
@@ -1235,6 +1300,23 @@ public class VCFFilter extends javax.swing.JFrame {
             }
         });
         jPopupMenu8.add(jMenuItem19);
+        jPopupMenu8.add(jSeparator15);
+
+        jMenuItem38.setText("Remove selected files");
+        jMenuItem38.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem38ActionPerformed(evt);
+            }
+        });
+        jPopupMenu8.add(jMenuItem38);
+
+        jMenuItem39.setText("Keep selected files");
+        jMenuItem39.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem39ActionPerformed(evt);
+            }
+        });
+        jPopupMenu8.add(jMenuItem39);
 
         jMenuItem20.setText("Add more");
         jMenuItem20.addActionListener(new java.awt.event.ActionListener() {
@@ -1252,6 +1334,23 @@ public class VCFFilter extends javax.swing.JFrame {
             }
         });
         jPopupMenu9.add(jMenuItem21);
+        jPopupMenu9.add(jSeparator16);
+
+        jMenuItem40.setText("Remove selected files");
+        jMenuItem40.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem40ActionPerformed(evt);
+            }
+        });
+        jPopupMenu9.add(jMenuItem40);
+
+        jMenuItem41.setText("Keep selected files");
+        jMenuItem41.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem41ActionPerformed(evt);
+            }
+        });
+        jPopupMenu9.add(jMenuItem41);
 
         jMenuItem22.setText("Add more");
         jMenuItem22.addActionListener(new java.awt.event.ActionListener() {
@@ -1320,6 +1419,23 @@ public class VCFFilter extends javax.swing.JFrame {
             }
         });
         jPopupMenu13.add(jMenuItem29);
+        jPopupMenu13.add(jSeparator17);
+
+        jMenuItem42.setText("Remove selected files");
+        jMenuItem42.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem42ActionPerformed(evt);
+            }
+        });
+        jPopupMenu13.add(jMenuItem42);
+
+        jMenuItem43.setText("Keep selected files");
+        jMenuItem43.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem43ActionPerformed(evt);
+            }
+        });
+        jPopupMenu13.add(jMenuItem43);
 
         jMenuItem30.setText("Clear");
         jMenuItem30.addActionListener(new java.awt.event.ActionListener() {
@@ -1572,6 +1688,15 @@ public class VCFFilter extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText("in");
+
+        jComboBox7.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "total", "het", "hom" }));
+        jComboBox7.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox7ItemStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -1579,30 +1704,32 @@ public class VCFFilter extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jRadioButton3)
+                            .addComponent(jRadioButton1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jRadioButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jRadioButton4))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jRadioButton3)
-                                    .addComponent(jRadioButton1))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jRadioButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jRadioButton4))
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel9)
+                                .addGap(12, 12, 12)
+                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addContainerGap())))
+                                .addComponent(jLabel1)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jComboBox7, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1618,7 +1745,9 @@ public class VCFFilter extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(jComboBox7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton13)
@@ -1627,7 +1756,7 @@ public class VCFFilter extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel25.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "White (pass) lists"));
+        jPanel25.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Inclusion lists"));
         jPanel25.setPreferredSize(new java.awt.Dimension(170, 199));
 
         jButton21.setText("Open");
@@ -1665,7 +1794,7 @@ public class VCFFilter extends javax.swing.JFrame {
                 .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
         );
 
-        jPanel26.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Black (non-pass) lists"));
+        jPanel26.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Exclusion lists"));
 
         jButton22.setText("Open");
         jButton22.addActionListener(new java.awt.event.ActionListener() {
@@ -1747,13 +1876,13 @@ public class VCFFilter extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel25, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
+                .addComponent(jPanel25, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel26, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel27, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+                .addComponent(jPanel27, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1955,7 +2084,7 @@ public class VCFFilter extends javax.swing.JFrame {
         jPanel17Layout.setHorizontalGroup(
             jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jButton10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
+            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
         );
         jPanel17Layout.setVerticalGroup(
             jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1981,6 +2110,11 @@ public class VCFFilter extends javax.swing.JFrame {
                 jList5MouseClicked(evt);
             }
         });
+        jList5.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jList5ValueChanged(evt);
+            }
+        });
         jScrollPane7.setViewportView(jList5);
 
         javax.swing.GroupLayout jPanel18Layout = new javax.swing.GroupLayout(jPanel18);
@@ -1988,7 +2122,7 @@ public class VCFFilter extends javax.swing.JFrame {
         jPanel18Layout.setHorizontalGroup(
             jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
+            .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
         );
         jPanel18Layout.setVerticalGroup(
             jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1997,6 +2131,8 @@ public class VCFFilter extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
+
+        jScrollPane9.setBorder(null);
 
         jPanel20.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Relations"));
 
@@ -2047,7 +2183,7 @@ public class VCFFilter extends javax.swing.JFrame {
                         .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(jPanel20Layout.createSequentialGroup()
-                        .addGap(0, 28, Short.MAX_VALUE)
+                        .addGap(0, 39, Short.MAX_VALUE)
                         .addComponent(jRadioButton5)
                         .addGap(18, 18, 18)
                         .addComponent(jRadioButton6)
@@ -2072,9 +2208,11 @@ public class VCFFilter extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jScrollPane9.setViewportView(jPanel20);
+
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Lists and controls"));
 
-        jList2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "White (pass) lists"));
+        jList2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Inclusion lists"));
         jList2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jList2MouseClicked(evt);
@@ -2087,7 +2225,7 @@ public class VCFFilter extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(jList2);
 
-        jList10.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Black (non-pass) lists"));
+        jList10.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Exclusion lists"));
         jList10.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jList10MouseClicked(evt);
@@ -2141,6 +2279,15 @@ public class VCFFilter extends javax.swing.JFrame {
             }
         });
 
+        jLabel4.setText("in");
+
+        jComboBox8.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "total", "het", "hom" }));
+        jComboBox8.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox8ItemStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -2151,24 +2298,28 @@ public class VCFFilter extends javax.swing.JFrame {
                     .addComponent(jScrollPane14))
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
-                        .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton25)
-                        .addGap(17, 17, 17))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(jScrollPane13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                             .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addGap(29, 29, 29)
+                                .addGap(12, 12, 12)
                                 .addComponent(jLabel7)
-                                .addGap(31, 31, 31)
-                                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel4)
+                                .addGap(12, 12, 12)))
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jComboBox8, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton25, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jScrollPane13)))
+                .addGap(17, 17, 17))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2181,7 +2332,9 @@ public class VCFFilter extends javax.swing.JFrame {
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4)
+                            .addComponent(jComboBox8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton12)
@@ -2197,22 +2350,23 @@ public class VCFFilter extends javax.swing.JFrame {
             jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel16Layout.createSequentialGroup()
                 .addGap(5, 5, 5)
-                .addComponent(jPanel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(1, 1, 1)
+                .addComponent(jScrollPane9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel16Layout.setVerticalGroup(
             jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel16Layout.createSequentialGroup()
                 .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane9)
+                    .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -2236,7 +2390,7 @@ public class VCFFilter extends javax.swing.JFrame {
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel15, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel14, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane8)
                     .addComponent(jProgressBar2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -2245,13 +2399,13 @@ public class VCFFilter extends javax.swing.JFrame {
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGap(5, 5, 5)
-                .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(2, 2, 2)
                 .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jProgressBar2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -2607,8 +2761,14 @@ public class VCFFilter extends javax.swing.JFrame {
         cancelFilterWorker = false;
         jTextArea1.setText("");
         setActiveFilter();
-        boolean indexTestPassed = setActiveFileList();         
+        boolean indexTestPassed = setActiveFileList(); 
+        if(indexTestPassed && activeVCFFiles != null && activeVCFFiles.length > 0){            
+            if(!testHeaderLinesConsistency(activeVCFFiles[0])){
+                new Warning(this, "Example VCF file and test VCF file have divergent headers. Missing header lines in test VCF file will be ignored.");
+            }                    
+        }
         jProgressBar1.setValue(0);
+        
         if (activeVCFFiles != null && activeVCFFiles.length > 0 && jRadioButton1.isSelected() && indexTestPassed) {
             jButton16.setEnabled(false);
             filterWorker = new FilterWorker(this);
@@ -2681,6 +2841,7 @@ public class VCFFilter extends javax.swing.JFrame {
                 new Warning(this, "No recurrence file selected.");
             }
         }
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -2923,6 +3084,7 @@ public class VCFFilter extends javax.swing.JFrame {
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
         // TODO add your handling code here:
         cancelFamilyWorker = false;
+        
         try {
                 jTextArea3.setText("");
                 int files = jList4.getModel().getSize();
@@ -2931,19 +3093,25 @@ public class VCFFilter extends javax.swing.JFrame {
                     selected[i] = i;
                 }
                 jList4.setSelectedIndices(selected);
+                int files2 = jList5.getModel().getSize();
+                int[] selected2 = new int[files2];
+                for(int i = 0; i < files2; i++){
+                    selected2[i] = i;
+                }
+                jList5.setSelectedIndices(selected2);
                 setActiveFamilyFilter();
                 boolean indexTest1Passed = setActiveAffectedFileList();                   
                 boolean indexTest2Passed = setActiveUnaffectedFileList();
                 if (testSelectionConsistency()) {                
                     if (activeFamilyFilters.size() >= 0 && activeAffectedVCFFiles != null && activeAffectedVCFFiles.length > 0 && activeUnaffectedVCFFiles != null && activeUnaffectedVCFFiles.length > 0 && indexTest1Passed && indexTest2Passed) {
                         if(PREFERENCES.getGenesymbolField() == null){
-                            new Warning(this, "No gene symbol field defined. Compound heterozygous variant search won't be possible to be performed.");
+                            new Warning(this, "Wrong gene symbol field defined in Preferences -> Annotations. Compound heterozygous variant search isn't possible and won't be performed.");
                         }else{
                             VCFFileReader vcf = new VCFFileReader(activeAffectedVCFFiles[0]);
                             VariantContext vc = vcf.iterator().next();
                             Object o = vc.getAttribute(PREFERENCES.getGenesymbolField());
                             if(o == null){
-                                new Warning(this, "Wrong gene symbol field defined in Preferences -> Annotations. Compound heterozygous variant search won't be possible to be performed.");
+                                new Warning(this, "Wrong gene symbol field defined in Preferences -> Annotations. Compound heterozygous variant search isn't possible and won't be performed.");
                             }
                         }
                         getFamilyExampleButton().setEnabled(false);
@@ -2972,6 +3140,7 @@ public class VCFFilter extends javax.swing.JFrame {
         } catch (NullPointerException npe) {
             new Warning(this, "There are problems with the current file selection.");
         }
+        
     }//GEN-LAST:event_jButton12ActionPerformed
 
     /**
@@ -4710,6 +4879,7 @@ public class VCFFilter extends javax.swing.JFrame {
         }else{
             setFamilyControls(false);
         }
+        setFamilyRunButtonState();
     }//GEN-LAST:event_jList4ValueChanged
 
     /**
@@ -4813,24 +4983,23 @@ public class VCFFilter extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (evt.getActionCommand().equals(JFileChooser.APPROVE_SELECTION)) {
             File[] files = jFileChooser26.getSelectedFiles();
-            for(File f : files){
-                if(f.getName().endsWith(".vcf")){
-                    VariantContextWriter writer = null;
+            Cursor waitCursor = new Cursor(Cursor.WAIT_CURSOR);
+            Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
+            for(File f : files){                
+                if(f.getName().endsWith(".vcf") || f.getName().endsWith(".vcf.gz")){
+                    this.setCursor(waitCursor);
                     try{
-                        writer = test.getVariantContextWriter(f);
-                        VCFFileReader reader = new VCFFileReader(f, false);
-                        writer.writeHeader(reader.getFileHeader());
-                        Iterator<VariantContext> it = reader.iterator();
-                        while(it.hasNext()){
-                            writer.add(it.next());
-                        }   
-                        writer.close();
-                    }catch(Exception e){
-                        writer.close();
-                        new Warning(this, e.getMessage());                        
+                        IndexedVCFFileWriter.index(f, false);                   
+                    }catch(Exception e){                        
+                        new Warning(this, "This file could not be indexed. " + f.getName() + " " + e.getMessage());  
+                        e.printStackTrace();
                     }
+                }else{
+                    this.setCursor(defaultCursor);
+                    new Warning(this, "Input file must be VCF text (.vcf) or compressed VCF text (.vcf.gz)");
                 }
-            }            
+            }  
+            this.setCursor(defaultCursor);
         }  
     }//GEN-LAST:event_jFileChooser26ActionPerformed
 
@@ -4988,6 +5157,206 @@ public class VCFFilter extends javax.swing.JFrame {
           
     }//GEN-LAST:event_jButton25ActionPerformed
 
+    private void jComboBox7ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox7ItemStateChanged
+        // TODO add your handling code here:
+        recurrenceType = jComboBox7.getSelectedItem().toString();
+    }//GEN-LAST:event_jComboBox7ItemStateChanged
+
+    private void jComboBox8ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox8ItemStateChanged
+        // TODO add your handling code here:
+        recurrenceType = jComboBox8.getSelectedItem().toString();
+    }//GEN-LAST:event_jComboBox8ItemStateChanged
+
+    private void jMenuItem36ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem36ActionPerformed
+        // TODO add your handling code here:
+        //remove selected VCF files in Filter tab
+        File[] temp = new File[selectedVCFFiles.length - activeVCFFiles.length];
+        int count = 0;
+        for(int i = 0; i < selectedVCFFiles.length; i++){
+            if(!containsFile(activeVCFFiles, selectedVCFFiles[i])){
+                temp[count] = selectedVCFFiles[i];
+                count++;
+            }
+        }        
+        selectedVCFFiles = temp;            
+        setFileList();
+        setFilterRunButtonState();       
+    }//GEN-LAST:event_jMenuItem36ActionPerformed
+
+    
+    
+    private void jMenuItem37ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem37ActionPerformed
+        // TODO add your handling code here:
+        //keep selected VCF files in Filter tab
+        selectedVCFFiles = new File[activeVCFFiles.length];
+        for(int i = 0; i < activeVCFFiles.length; i++){
+            selectedVCFFiles[i] = activeVCFFiles[i];
+        }        
+        setFileList();
+        setFilterRunButtonState();   
+    }//GEN-LAST:event_jMenuItem37ActionPerformed
+
+    private void jMenuItem38ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem38ActionPerformed
+        // TODO add your handling code here:
+        //remove selected affected VCF files in Family tab
+        int[] selected = jList4.getSelectedIndices();        
+        activeAffectedVCFFiles = new File[selected.length];
+        int count = 0;
+        for(int i = 0; i < selected.length; i++){            
+            activeAffectedVCFFiles[count] = selectedAffectedVCFFiles[selected[i]];
+            count++;            
+        }
+        File[] temp = new File[selectedAffectedVCFFiles.length - activeAffectedVCFFiles.length];
+        count = 0;
+        for(int i = 0; i < selectedAffectedVCFFiles.length; i++){
+            if(!containsFile(activeAffectedVCFFiles, selectedAffectedVCFFiles[i])){
+                temp[count] = selectedAffectedVCFFiles[i];
+                count++;
+            }
+        }        
+        selectedAffectedVCFFiles = temp;            
+        setAffectedFileList();            
+        setFamilyRunButtonState();
+    }//GEN-LAST:event_jMenuItem38ActionPerformed
+
+    private void jMenuItem39ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem39ActionPerformed
+        // TODO add your handling code here:
+        //keep selected affected VCF files in Family tab
+        int[] selected = jList4.getSelectedIndices();        
+        activeAffectedVCFFiles = new File[selected.length];
+        int count = 0;
+        for(int i = 0; i < selected.length; i++){
+            activeAffectedVCFFiles[count] = selectedAffectedVCFFiles[selected[i]];
+            count++;
+    
+        }        
+        selectedAffectedVCFFiles = new File[activeAffectedVCFFiles.length];
+        for(int i = 0; i < activeAffectedVCFFiles.length; i++){
+            selectedAffectedVCFFiles[i] = activeAffectedVCFFiles[i];
+        }        
+        setAffectedFileList();            
+        setFamilyRunButtonState();  
+    }//GEN-LAST:event_jMenuItem39ActionPerformed
+
+    private void jMenuItem40ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem40ActionPerformed
+        // TODO add your handling code here:
+        //remove selected unaffected VCF files in Family tab
+        int[] selected = jList5.getSelectedIndices();        
+        activeUnaffectedVCFFiles = new File[selected.length];
+        int count = 0;
+        for(int i = 0; i < selected.length; i++){            
+            activeUnaffectedVCFFiles[count] = selectedUnaffectedVCFFiles[selected[i]];
+            count++;            
+        }
+        File[] temp = new File[selectedUnaffectedVCFFiles.length - activeUnaffectedVCFFiles.length];
+        count = 0;
+        for(int i = 0; i < selectedUnaffectedVCFFiles.length; i++){
+            if(!containsFile(activeUnaffectedVCFFiles, selectedUnaffectedVCFFiles[i])){
+                temp[count] = selectedUnaffectedVCFFiles[i];
+                count++;
+            }
+        }        
+        selectedUnaffectedVCFFiles = temp;            
+        setUnaffectedFileList();            
+        setFamilyRunButtonState();
+    }//GEN-LAST:event_jMenuItem40ActionPerformed
+
+    private void jMenuItem41ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem41ActionPerformed
+        // TODO add your handling code here:
+        //keep selected unaffected VCF files in Family tab
+        int[] selected = jList5.getSelectedIndices();        
+        activeUnaffectedVCFFiles = new File[selected.length];
+        int count = 0;
+        for(int i = 0; i < selected.length; i++){            
+            activeUnaffectedVCFFiles[count] = selectedUnaffectedVCFFiles[selected[i]];
+            count++;            
+        }
+        selectedUnaffectedVCFFiles = new File[activeUnaffectedVCFFiles.length];
+        for(int i = 0; i < activeUnaffectedVCFFiles.length; i++){
+            selectedUnaffectedVCFFiles[i] = activeUnaffectedVCFFiles[i];
+        }        
+        setUnaffectedFileList();           
+        setFamilyRunButtonState(); 
+    }//GEN-LAST:event_jMenuItem41ActionPerformed
+
+    private void jMenuItem42ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem42ActionPerformed
+        // TODO add your handling code here:
+        //remove selected search VCF files in Search tab
+        int[] selected = jList3.getSelectedIndices();        
+        activeSearchVCFFiles = new File[selected.length];
+        int count = 0;
+        for(int i = 0; i < selected.length; i++){            
+            activeSearchVCFFiles[count] = selectedSearchVCFFiles[selected[i]];
+            count++;            
+        }
+        File[] temp = new File[selectedSearchVCFFiles.length - activeSearchVCFFiles.length];
+        count = 0;
+        for(int i = 0; i < selectedSearchVCFFiles.length; i++){
+            if(!containsFile(activeSearchVCFFiles, selectedSearchVCFFiles[i])){
+                temp[count] = selectedSearchVCFFiles[i];
+                count++;
+            }
+        }        
+        selectedSearchVCFFiles = temp;            
+        setSearchFileList();
+        setSearchRunButtonState();    
+    }//GEN-LAST:event_jMenuItem42ActionPerformed
+
+    private void jMenuItem43ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem43ActionPerformed
+        // TODO add your handling code here:
+        //keep selected VCF files in Search tab
+        int[] selected = jList3.getSelectedIndices();        
+        activeSearchVCFFiles = new File[selected.length];
+        int count = 0;
+        for(int i = 0; i < selected.length; i++){            
+            activeSearchVCFFiles[count] = selectedSearchVCFFiles[selected[i]];
+            count++;            
+        }
+        selectedSearchVCFFiles = new File[activeSearchVCFFiles.length];
+        for(int i = 0; i < activeSearchVCFFiles.length; i++){
+            selectedSearchVCFFiles[i] = activeSearchVCFFiles[i];
+        }        
+        setSearchFileList();
+        setSearchRunButtonState();   
+    }//GEN-LAST:event_jMenuItem43ActionPerformed
+
+    private void jMenuItem44ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem44ActionPerformed
+        // TODO add your handling code here:
+        if(jFileChooser27.getCurrentDirectory() == null && PREFERENCES.getDefaultDir() != null){
+            jFileChooser27.setCurrentDirectory(PREFERENCES.getDefaultDir());
+        }
+        jFileChooser27.showSaveDialog(this);
+    }//GEN-LAST:event_jMenuItem44ActionPerformed
+
+    private void jFileChooser27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFileChooser27ActionPerformed
+        // TODO add your handling code here:
+        if (evt.getActionCommand().equals(JFileChooser.APPROVE_SELECTION)) {
+            File f = jFileChooser27.getSelectedFile();
+            saveAsBed(f, jTextArea1.getText());            
+        }
+    }//GEN-LAST:event_jFileChooser27ActionPerformed
+
+    private void jList5ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList5ValueChanged
+        // TODO add your handling code here:
+        int selected[] = jList5.getSelectedIndices();
+        if(selected != null && selected.length > 0){
+            activeUnaffectedVCFFiles = new File[selected.length];
+            for(int i = 0; i < selected.length; i++){
+                activeUnaffectedVCFFiles[i] = selectedUnaffectedVCFFiles[selected[i]];
+            }
+        }
+        setFamilyRunButtonState();
+    }//GEN-LAST:event_jList5ValueChanged
+
+    private boolean containsFile(File[] array, File f){
+        for(File a : array){
+            if(a.getAbsolutePath().equals(f.getAbsolutePath())){                
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /**
     * Combines two file arrays into one array of dimension a1.length + a2.lenghth.
     *
@@ -5037,6 +5406,35 @@ public class VCFFilter extends javax.swing.JFrame {
             FileWriter fwr = new FileWriter(path);
             BufferedWriter br = new BufferedWriter(fwr);
             br.write(text);
+            br.flush();
+            br.close();            
+        }catch(IOException ioe){
+            ioe.printStackTrace();
+        }        
+    }
+    
+    private void saveAsBed(File f, String text){
+        try{
+            String path = f.getAbsolutePath();
+            if(!path.endsWith(".bed")){
+                path = path + ".bed";
+            }
+            String[] lines = text.split("\n");
+            String line = "";
+            int counter = 0;
+            while(!lines[counter].startsWith("Variants found:")){
+                counter++;
+            }
+            counter++;
+            counter++;
+            FileWriter fwr = new FileWriter(path);
+            BufferedWriter br = new BufferedWriter(fwr);
+            for(int i = counter; i < lines.length; i++){
+                String[] coords = lines[i].split("\t");
+                if(coords.length > 1){
+                    br.write(coords[0] + "\t" + coords[1] + "\t" + coords[1] + "\n");
+                }
+            }
             br.flush();
             br.close();            
         }catch(IOException ioe){
@@ -5316,25 +5714,47 @@ public class VCFFilter extends javax.swing.JFrame {
     * @author Heiko Müller
     * @since 1.0
     */
-    private void setAffectedFileList() {
+    private void setAffectedFileList() {      
         if (selectedAffectedVCFFiles != null && selectedAffectedVCFFiles.length > 0) {
+            int[] selected = new int[selectedAffectedVCFFiles.length];            
             String[] files = new String[selectedAffectedVCFFiles.length];
-            DefaultListModel listModel = new DefaultListModel();
-            int[] selected = new int[selectedAffectedVCFFiles.length];
-
+            DefaultListModel listModel = new DefaultListModel();            
+            
             for (int i = 0; i < selectedAffectedVCFFiles.length; i++) {
                 files[i] = selectedAffectedVCFFiles[i].getName();
                 listModel.addElement(selectedAffectedVCFFiles[i].getName());
-                //selected[i] = i;
+                selected[i] = i;
 
             }
             jList4.setModel(listModel);
             jList4.setSelectedIndices(selected);
-            jList4.setToolTipText("Select files to be searched.");
+            jList4.setToolTipText("Select single file to relationships.");
+            setRelationshipFiles();
         }else{
             DefaultListModel listModel = new DefaultListModel();
             jList4.setModel(listModel);            
-            jList4.setToolTipText("Select files to be searched.");
+            jList4.setToolTipText("Select single file to relationships.");
+        }
+    }
+    
+    private void setUnaffectedFileList() {
+        if (selectedUnaffectedVCFFiles != null && selectedUnaffectedVCFFiles.length > 0) {
+            String[] files = new String[selectedUnaffectedVCFFiles.length];
+            DefaultListModel listModel = new DefaultListModel();
+            int[] selected = new int[selectedUnaffectedVCFFiles.length];
+            for (int i = 0; i < selectedUnaffectedVCFFiles.length; i++) {                
+                listModel.addElement(selectedUnaffectedVCFFiles[i].getName());
+                selected[i] = i;  
+                files[i] = selectedUnaffectedVCFFiles[i].getName();
+            }            
+            jList5.setModel(listModel);
+            jList5.setSelectedIndices(selected);
+            jList5.setToolTipText("Select files to be searched."); 
+            setRelationshipFiles();
+        }else{ 
+            DefaultListModel listModel = new DefaultListModel();
+            jList5.setModel(listModel);
+            jList5.setToolTipText("Select files to be searched.");
         }
     }
 
@@ -5344,7 +5764,7 @@ public class VCFFilter extends javax.swing.JFrame {
     * @author Heiko Müller
     * @since 1.0
     */
-    private void setUnaffectedFileList() {
+    private void setUnaffectedFileList0() {
         if (selectedUnaffectedVCFFiles != null && selectedUnaffectedVCFFiles.length > 0 && selectedAffectedVCFFiles != null && selectedAffectedVCFFiles.length > 0) {
             String[] files1 = new String[selectedUnaffectedVCFFiles.length + selectedAffectedVCFFiles.length];            
             jComboBox5.removeAllItems();
@@ -5379,7 +5799,62 @@ public class VCFFilter extends javax.swing.JFrame {
             jList5.setModel(listModel);
             jList5.setToolTipText("Select files to be searched.");
         }
+        
     }
+    
+    private void setRelationshipFiles() {
+        if (selectedUnaffectedVCFFiles != null && selectedUnaffectedVCFFiles.length > 0 && selectedAffectedVCFFiles != null && selectedAffectedVCFFiles.length > 0) {
+            String[] files1 = new String[selectedUnaffectedVCFFiles.length + selectedAffectedVCFFiles.length];            
+            jComboBox5.removeAllItems();
+            jComboBox6.removeAllItems();
+            jComboBox5.addItem("None");
+            jComboBox6.addItem("None");
+            jComboBox5.setSelectedIndex(0);
+            jComboBox6.setSelectedIndex(0);
+            for (int i = 0; i < selectedUnaffectedVCFFiles.length; i++) {
+                files1[i] = selectedUnaffectedVCFFiles[i].getName();
+                jComboBox5.addItem(selectedUnaffectedVCFFiles[i].getName());
+                jComboBox6.addItem(selectedUnaffectedVCFFiles[i].getName());
+            }
+            for (int i = 0; i < selectedAffectedVCFFiles.length; i++) {
+                files1[i + selectedUnaffectedVCFFiles.length] = selectedAffectedVCFFiles[i].getName();
+                jComboBox5.addItem(selectedAffectedVCFFiles[i].getName());
+                jComboBox6.addItem(selectedAffectedVCFFiles[i].getName());
+            }
+        }else{
+            jComboBox5.removeAllItems();
+            jComboBox6.removeAllItems();
+        }
+        if(relationships != null){
+            int limit = relationships.getRelationships().size();
+            for(int l = 0; l < limit; l++){
+                Relationship r = relationships.getRelationships().get(l);
+                for(int k = 0; k < jList4.getModel().getSize(); k++){
+                    String individual = r.getIndividual();
+                    if(contains(individual, jList4)){
+                        JComboBox jbm = r.getMotherFileDropdownList();
+                        JComboBox jbf = r.getFatherFileDropdownList();
+                        jbm.removeAllItems();
+                        jbf.removeAllItems();
+                        for(int i = 0; i < jList5.getModel().getSize(); i++){
+                            jbm.addItem(jList5.getModel().getElementAt(i).toString());
+                            jbf.addItem(jList5.getModel().getElementAt(i).toString());
+                        }
+                        for(int i = 0; i < jList4.getModel().getSize(); i++){
+                            jbm.addItem(jList4.getModel().getElementAt(i).toString());
+                            jbf.addItem(jList4.getModel().getElementAt(i).toString());
+                        }
+                    }else{
+                        relationships.removeRelationshipForIndividual(individual);                    
+                        limit--;
+                    }
+                }
+
+            }
+        }
+    }
+    
+    
     
     
     /**
@@ -5406,6 +5881,7 @@ public class VCFFilter extends javax.swing.JFrame {
                             new Warning(this, te.getMessage());
                         }
                     }
+                    
                 }
             }
         }
@@ -5612,6 +6088,15 @@ public class VCFFilter extends javax.swing.JFrame {
     private boolean contains(String f, File[] flist) {
         for (int i = 0; i < flist.length; i++) {
             if (f.equals(flist[i].getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private boolean contains(String f, JList l) {        
+        for (int i = 0; i < l.getModel().getSize(); i++) {
+            if (f.equals((String)l.getModel().getElementAt(i))) {
                 return true;
             }
         }
@@ -6493,6 +6978,7 @@ public class VCFFilter extends javax.swing.JFrame {
         
         if(jRadioButton3.isSelected() && (PREFERENCES.getGenesymbolField() == null || PREFERENCES.getGenesymbolField().equals("CHROM"))){
             jButton1.setBackground(Color.red);
+            new Warning(this, "Please choose a valid gene symbol annotation field in File -> Preferences -> Annotations.");
         }
         
         if(filters != null){
@@ -6516,10 +7002,12 @@ public class VCFFilter extends javax.swing.JFrame {
         }
         
         if(!setActiveAffectedFileList()) {
+            //System.out.println("setActiveAffectedFileList");
             jButton12.setBackground(Color.red);
             return;
         }         
         if(!setActiveUnaffectedFileList()) {
+            //System.out.println("setActiveUnaffectedFileList");
             jButton12.setBackground(Color.red);
             return;
         }        
@@ -6529,17 +7017,24 @@ public class VCFFilter extends javax.swing.JFrame {
         //    return;
         //}        
         if(activeAffectedVCFFiles == null || activeAffectedVCFFiles.length == 0) {
+            //System.out.println("affected undefined");
             jButton12.setBackground(Color.red);
             return;
         }        
         if(activeUnaffectedVCFFiles == null || activeUnaffectedVCFFiles.length == 0) {
+            //System.out.println("unaffected undefined");
             jButton12.setBackground(Color.red);
             return;
         }     
         if(!testSelectionConsistency()) {
             jButton12.setBackground(Color.red);
             return;
-        }         
+        }  
+        
+        if(relationships == null || relationships.getRelationships() == null || relationships.getRelationships().size() == 0){
+            jButton12.setBackground(Color.red);
+            return;
+        }
         jButton12.setBackground(Color.green);
     }
     
@@ -6633,6 +7128,31 @@ public class VCFFilter extends javax.swing.JFrame {
     
     public JButton getSearchExampleButton(){
         return jButton24;
+    }
+    
+    public String getRecurrenceType(){
+        return recurrenceType;
+    }
+    
+    private boolean testHeaderLinesConsistency(File vcffile) {
+        VCFFileReader vcf = new VCFFileReader(vcffile);
+        Iterator<VCFInfoHeaderLine> it = vcf.getFileHeader().getInfoHeaderLines().iterator();
+        while(it.hasNext()){
+            String id = it.next().getID();
+            VCFInfoHeaderLine hl = PREFERENCES.getInfoHeaderLine(id);
+            if(hl == null){
+                return false;
+            }
+        }
+        Iterator<VCFFormatHeaderLine> it2 = vcf.getFileHeader().getFormatHeaderLines().iterator();
+        while(it2.hasNext()){
+            String id = it2.next().getID();
+            VCFFormatHeaderLine hl = PREFERENCES.getFormatHeaderLine(id);
+            if(hl == null){
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -6730,6 +7250,8 @@ public class VCFFilter extends javax.swing.JFrame {
     private javax.swing.JComboBox jComboBox4;
     private javax.swing.JComboBox jComboBox5;
     private javax.swing.JComboBox jComboBox6;
+    private javax.swing.JComboBox jComboBox7;
+    private javax.swing.JComboBox jComboBox8;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JFileChooser jFileChooser10;
     private javax.swing.JFileChooser jFileChooser11;
@@ -6749,6 +7271,7 @@ public class VCFFilter extends javax.swing.JFrame {
     private javax.swing.JFileChooser jFileChooser24;
     private javax.swing.JFileChooser jFileChooser25;
     private javax.swing.JFileChooser jFileChooser26;
+    private javax.swing.JFileChooser jFileChooser27;
     private javax.swing.JFileChooser jFileChooser3;
     private javax.swing.JFileChooser jFileChooser4;
     private javax.swing.JFileChooser jFileChooser5;
@@ -6756,8 +7279,10 @@ public class VCFFilter extends javax.swing.JFrame {
     private javax.swing.JFileChooser jFileChooser7;
     private javax.swing.JFileChooser jFileChooser8;
     private javax.swing.JFileChooser jFileChooser9;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JList jList1;
@@ -6803,7 +7328,16 @@ public class VCFFilter extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem33;
     private javax.swing.JMenuItem jMenuItem34;
     private javax.swing.JMenuItem jMenuItem35;
+    private javax.swing.JMenuItem jMenuItem36;
+    private javax.swing.JMenuItem jMenuItem37;
+    private javax.swing.JMenuItem jMenuItem38;
+    private javax.swing.JMenuItem jMenuItem39;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem40;
+    private javax.swing.JMenuItem jMenuItem41;
+    private javax.swing.JMenuItem jMenuItem42;
+    private javax.swing.JMenuItem jMenuItem43;
+    private javax.swing.JMenuItem jMenuItem44;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
@@ -6875,11 +7409,16 @@ public class VCFFilter extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator10;
     private javax.swing.JPopupMenu.Separator jSeparator11;
     private javax.swing.JPopupMenu.Separator jSeparator12;
     private javax.swing.JPopupMenu.Separator jSeparator13;
+    private javax.swing.JPopupMenu.Separator jSeparator14;
+    private javax.swing.JPopupMenu.Separator jSeparator15;
+    private javax.swing.JPopupMenu.Separator jSeparator16;
+    private javax.swing.JPopupMenu.Separator jSeparator17;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;

@@ -27,7 +27,7 @@
 package at.ac.oeaw.cemm.bsf.vcffilter.filter;
 
 import htsjdk.variant.variantcontext.VariantContext;
-import htsjdk.variant.vcf.VCFInfoHeaderLine;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
 
 /** 
  * Filters for character fields.
@@ -64,7 +64,7 @@ public class CharacterFilter extends Filter{
      * @author Heiko Müller
      * @since 1.0
      */
-    public CharacterFilter(VCFInfoHeaderLine header){
+    public CharacterFilter(VCFCompoundHeaderLine header){
         super(header);   
         criterion1.setToolTipText("C");
         criterion2.setToolTipText("C");

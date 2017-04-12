@@ -27,7 +27,7 @@
 package at.ac.oeaw.cemm.bsf.vcffilter.filter;
 
 import htsjdk.variant.variantcontext.VariantContext;
-import htsjdk.variant.vcf.VCFInfoHeaderLine;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
 import java.util.List;
 import java.util.Set;
 
@@ -61,7 +61,7 @@ public class DoubleArrayFilter extends ArrayFilter{
     * @author Heiko Müller
     * @since 1.0
     */
-    public DoubleArrayFilter(VCFInfoHeaderLine header){
+    public DoubleArrayFilter(VCFCompoundHeaderLine header){
         super(header);  
         criterion1.setToolTipText("<0.5");
         criterion2.setToolTipText(">0.5");
