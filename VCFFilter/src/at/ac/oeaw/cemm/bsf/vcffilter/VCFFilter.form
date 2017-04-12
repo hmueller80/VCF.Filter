@@ -1035,13 +1035,13 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jPanel4" pref="272" max="32767" attributes="0"/>
+                          <Component id="jPanel4" pref="278" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jPanel25" pref="269" max="32767" attributes="0"/>
+                          <Component id="jPanel25" pref="275" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel26" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jPanel27" pref="267" max="32767" attributes="0"/>
+                          <Component id="jPanel27" pref="273" max="32767" attributes="0"/>
                           <EmptySpace type="unrelated" max="32767" attributes="0"/>
                           <Component id="jPanel5" min="-2" pref="280" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>

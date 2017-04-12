@@ -4865,6 +4865,7 @@ public class VCFFilter extends javax.swing.JFrame {
                     }
                 }
             }
+            
             if(jComboBox5.getModel().getSize() > 0 && jComboBox6.getModel().getSize() > 0){                
                     jComboBox5.setSelectedItem(r.getMother());              
                     jComboBox6.setSelectedItem(r.getFather()); 
@@ -5170,17 +5171,19 @@ public class VCFFilter extends javax.swing.JFrame {
     private void jMenuItem36ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem36ActionPerformed
         // TODO add your handling code here:
         //remove selected VCF files in Filter tab
-        File[] temp = new File[selectedVCFFiles.length - activeVCFFiles.length];
-        int count = 0;
-        for(int i = 0; i < selectedVCFFiles.length; i++){
-            if(!containsFile(activeVCFFiles, selectedVCFFiles[i])){
-                temp[count] = selectedVCFFiles[i];
-                count++;
-            }
-        }        
-        selectedVCFFiles = temp;            
-        setFileList();
-        setFilterRunButtonState();       
+        if(jList1.getModel().getSize() > 0){
+            File[] temp = new File[selectedVCFFiles.length - activeVCFFiles.length];
+            int count = 0;
+            for(int i = 0; i < selectedVCFFiles.length; i++){
+                if(!containsFile(activeVCFFiles, selectedVCFFiles[i])){
+                    temp[count] = selectedVCFFiles[i];
+                    count++;
+                }
+            }        
+            selectedVCFFiles = temp;
+            setFileList();
+            setFilterRunButtonState();   
+        }    
     }//GEN-LAST:event_jMenuItem36ActionPerformed
 
     
@@ -5188,95 +5191,105 @@ public class VCFFilter extends javax.swing.JFrame {
     private void jMenuItem37ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem37ActionPerformed
         // TODO add your handling code here:
         //keep selected VCF files in Filter tab
-        selectedVCFFiles = new File[activeVCFFiles.length];
-        for(int i = 0; i < activeVCFFiles.length; i++){
-            selectedVCFFiles[i] = activeVCFFiles[i];
-        }        
-        setFileList();
-        setFilterRunButtonState();   
+        if(jList1.getModel().getSize() > 0){
+            selectedVCFFiles = new File[activeVCFFiles.length];
+            for(int i = 0; i < activeVCFFiles.length; i++){
+                selectedVCFFiles[i] = activeVCFFiles[i];
+            }        
+            setFileList();
+            setFilterRunButtonState();   
+        }
     }//GEN-LAST:event_jMenuItem37ActionPerformed
 
     private void jMenuItem38ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem38ActionPerformed
         // TODO add your handling code here:
         //remove selected affected VCF files in Family tab
-        int[] selected = jList4.getSelectedIndices();        
-        activeAffectedVCFFiles = new File[selected.length];
-        int count = 0;
-        for(int i = 0; i < selected.length; i++){            
-            activeAffectedVCFFiles[count] = selectedAffectedVCFFiles[selected[i]];
-            count++;            
-        }
-        File[] temp = new File[selectedAffectedVCFFiles.length - activeAffectedVCFFiles.length];
-        count = 0;
-        for(int i = 0; i < selectedAffectedVCFFiles.length; i++){
-            if(!containsFile(activeAffectedVCFFiles, selectedAffectedVCFFiles[i])){
-                temp[count] = selectedAffectedVCFFiles[i];
-                count++;
+        if(jList4.getModel().getSize() > 0){
+            int[] selected = jList4.getSelectedIndices();        
+            activeAffectedVCFFiles = new File[selected.length];
+            int count = 0;
+            for(int i = 0; i < selected.length; i++){            
+                activeAffectedVCFFiles[count] = selectedAffectedVCFFiles[selected[i]];
+                count++;            
             }
-        }        
-        selectedAffectedVCFFiles = temp;            
-        setAffectedFileList();            
-        setFamilyRunButtonState();
+            File[] temp = new File[selectedAffectedVCFFiles.length - activeAffectedVCFFiles.length];
+            count = 0;
+            for(int i = 0; i < selectedAffectedVCFFiles.length; i++){
+                if(!containsFile(activeAffectedVCFFiles, selectedAffectedVCFFiles[i])){
+                    temp[count] = selectedAffectedVCFFiles[i];
+                    count++;
+                }
+            }        
+            selectedAffectedVCFFiles = temp;            
+            setAffectedFileList();            
+            setFamilyRunButtonState();
+        }
     }//GEN-LAST:event_jMenuItem38ActionPerformed
 
     private void jMenuItem39ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem39ActionPerformed
         // TODO add your handling code here:
         //keep selected affected VCF files in Family tab
-        int[] selected = jList4.getSelectedIndices();        
-        activeAffectedVCFFiles = new File[selected.length];
-        int count = 0;
-        for(int i = 0; i < selected.length; i++){
-            activeAffectedVCFFiles[count] = selectedAffectedVCFFiles[selected[i]];
-            count++;
-    
-        }        
-        selectedAffectedVCFFiles = new File[activeAffectedVCFFiles.length];
-        for(int i = 0; i < activeAffectedVCFFiles.length; i++){
-            selectedAffectedVCFFiles[i] = activeAffectedVCFFiles[i];
-        }        
-        setAffectedFileList();            
-        setFamilyRunButtonState();  
+        if(jList4.getModel().getSize() > 0){
+            int[] selected = jList4.getSelectedIndices();        
+            activeAffectedVCFFiles = new File[selected.length];
+            int count = 0;
+            for(int i = 0; i < selected.length; i++){
+                activeAffectedVCFFiles[count] = selectedAffectedVCFFiles[selected[i]];
+                count++;
+
+            }        
+            selectedAffectedVCFFiles = new File[activeAffectedVCFFiles.length];
+            for(int i = 0; i < activeAffectedVCFFiles.length; i++){
+                selectedAffectedVCFFiles[i] = activeAffectedVCFFiles[i];
+            }        
+            setAffectedFileList();            
+            setFamilyRunButtonState();  
+        }
     }//GEN-LAST:event_jMenuItem39ActionPerformed
 
     private void jMenuItem40ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem40ActionPerformed
         // TODO add your handling code here:
         //remove selected unaffected VCF files in Family tab
-        int[] selected = jList5.getSelectedIndices();        
-        activeUnaffectedVCFFiles = new File[selected.length];
-        int count = 0;
-        for(int i = 0; i < selected.length; i++){            
-            activeUnaffectedVCFFiles[count] = selectedUnaffectedVCFFiles[selected[i]];
-            count++;            
-        }
-        File[] temp = new File[selectedUnaffectedVCFFiles.length - activeUnaffectedVCFFiles.length];
-        count = 0;
-        for(int i = 0; i < selectedUnaffectedVCFFiles.length; i++){
-            if(!containsFile(activeUnaffectedVCFFiles, selectedUnaffectedVCFFiles[i])){
-                temp[count] = selectedUnaffectedVCFFiles[i];
-                count++;
+        if(jList5.getModel().getSize() > 0){
+            int[] selected = jList5.getSelectedIndices();        
+            activeUnaffectedVCFFiles = new File[selected.length];
+            int count = 0;
+            for(int i = 0; i < selected.length; i++){            
+                activeUnaffectedVCFFiles[count] = selectedUnaffectedVCFFiles[selected[i]];
+                count++;            
             }
-        }        
-        selectedUnaffectedVCFFiles = temp;            
-        setUnaffectedFileList();            
-        setFamilyRunButtonState();
+            File[] temp = new File[selectedUnaffectedVCFFiles.length - activeUnaffectedVCFFiles.length];
+            count = 0;
+            for(int i = 0; i < selectedUnaffectedVCFFiles.length; i++){
+                if(!containsFile(activeUnaffectedVCFFiles, selectedUnaffectedVCFFiles[i])){
+                    temp[count] = selectedUnaffectedVCFFiles[i];
+                    count++;
+                }
+            }        
+            selectedUnaffectedVCFFiles = temp;            
+            setUnaffectedFileList();            
+            setFamilyRunButtonState();
+        }
     }//GEN-LAST:event_jMenuItem40ActionPerformed
 
     private void jMenuItem41ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem41ActionPerformed
         // TODO add your handling code here:
         //keep selected unaffected VCF files in Family tab
-        int[] selected = jList5.getSelectedIndices();        
-        activeUnaffectedVCFFiles = new File[selected.length];
-        int count = 0;
-        for(int i = 0; i < selected.length; i++){            
-            activeUnaffectedVCFFiles[count] = selectedUnaffectedVCFFiles[selected[i]];
-            count++;            
+        if(jList5.getModel().getSize() > 0){
+            int[] selected = jList5.getSelectedIndices();        
+            activeUnaffectedVCFFiles = new File[selected.length];
+            int count = 0;
+            for(int i = 0; i < selected.length; i++){            
+                activeUnaffectedVCFFiles[count] = selectedUnaffectedVCFFiles[selected[i]];
+                count++;            
+            }
+            selectedUnaffectedVCFFiles = new File[activeUnaffectedVCFFiles.length];
+            for(int i = 0; i < activeUnaffectedVCFFiles.length; i++){
+                selectedUnaffectedVCFFiles[i] = activeUnaffectedVCFFiles[i];
+            }        
+            setUnaffectedFileList();           
+            setFamilyRunButtonState(); 
         }
-        selectedUnaffectedVCFFiles = new File[activeUnaffectedVCFFiles.length];
-        for(int i = 0; i < activeUnaffectedVCFFiles.length; i++){
-            selectedUnaffectedVCFFiles[i] = activeUnaffectedVCFFiles[i];
-        }        
-        setUnaffectedFileList();           
-        setFamilyRunButtonState(); 
     }//GEN-LAST:event_jMenuItem41ActionPerformed
 
     private void jMenuItem42ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem42ActionPerformed
@@ -5338,14 +5351,22 @@ public class VCFFilter extends javax.swing.JFrame {
 
     private void jList5ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList5ValueChanged
         // TODO add your handling code here:
-        int selected[] = jList5.getSelectedIndices();
-        if(selected != null && selected.length > 0){
-            activeUnaffectedVCFFiles = new File[selected.length];
-            for(int i = 0; i < selected.length; i++){
-                activeUnaffectedVCFFiles[i] = selectedUnaffectedVCFFiles[selected[i]];
+        if(jList5.getModel().getSize() > 0){
+            int selected[] = jList5.getSelectedIndices();
+            if(selected != null && selected.length > 0){
+                activeUnaffectedVCFFiles = new File[selected.length];
+                for(int i = 0; i < selected.length; i++){
+                    activeUnaffectedVCFFiles[i] = selectedUnaffectedVCFFiles[selected[i]];
+                }
             }
+            //setUnaffectedFileList();
+            setFamilyRunButtonState();
+        }else{
+            selectedUnaffectedVCFFiles = null;
+            activeUnaffectedVCFFiles = null;
+            setUnaffectedFileList();
+            setFamilyRunButtonState();
         }
-        setFamilyRunButtonState();
     }//GEN-LAST:event_jList5ValueChanged
 
     private boolean containsFile(File[] array, File f){
@@ -5755,6 +5776,7 @@ public class VCFFilter extends javax.swing.JFrame {
             DefaultListModel listModel = new DefaultListModel();
             jList5.setModel(listModel);
             jList5.setToolTipText("Select files to be searched.");
+            setRelationshipFiles();
         }
     }
 
@@ -6981,6 +7003,10 @@ public class VCFFilter extends javax.swing.JFrame {
             new Warning(this, "Please choose a valid gene symbol annotation field in File -> Preferences -> Annotations.");
         }
         
+        if(selectedVCFFiles == null || selectedVCFFiles.length == 0){
+            jButton1.setBackground(Color.red);
+        }
+        
         if(filters != null){
             for(Filter f : filters){
                 f.setIDLabelState();
@@ -7026,6 +7052,25 @@ public class VCFFilter extends javax.swing.JFrame {
             jButton12.setBackground(Color.red);
             return;
         }     
+        
+        if(jList4.getModel().getSize() == 0) {
+            selectedAffectedVCFFiles = null;
+            relationships = null;            
+            //System.out.println("affected undefined");
+            jButton12.setBackground(Color.red);
+            return;
+        }        
+         
+        if(jList5.getModel().getSize() == 0) {
+            selectedUnaffectedVCFFiles = null;
+            activeUnaffectedVCFFiles = null;
+            updateRelationships();
+            //relationships = null;
+            //System.out.println("affected undefined");
+            jButton12.setBackground(Color.red);
+            return;
+        } 
+        
         if(!testSelectionConsistency()) {
             jButton12.setBackground(Color.red);
             return;
