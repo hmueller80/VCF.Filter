@@ -36,22 +36,67 @@ package at.ac.oeaw.cemm.bsf.vcffilter;
  * @since 1.0
  */
 public class NoExampleVCFFileException extends RuntimeException{
+    
+    /**
+    * Creates a NoExampleVCFFileException  
+    *
+    * @author Heiko Müller
+    * @version 1.0
+    * @since 1.0
+    */
     public NoExampleVCFFileException(){
         super();
     }
     
+    
+    /**
+    * Creates a NoExampleVCFFileException  
+    *
+    * @param message a message to be reported
+    * @author Heiko Müller
+    * @version 1.0
+    * @since 1.0
+    */
     public NoExampleVCFFileException(String message) {
         super(message);
     }
     
+    /**
+    * Creates a NoExampleVCFFileException  
+    *
+    * @param message a message to be reported
+    * @param cause the cause of the exception
+    * @author Heiko Müller
+    * @version 1.0
+    * @since 1.0
+    */
     public NoExampleVCFFileException(String message, Throwable cause) {
         super(message, cause);
     }
     
+    /**
+    * Creates a NoExampleVCFFileException  
+    *
+    * @param cause the cause of the exception
+    * @author Heiko Müller
+    * @version 1.0
+    * @since 1.0
+    */
     public NoExampleVCFFileException(Throwable cause) {
         super(cause);
     }
     
+    /**
+    * Creates a NoExampleVCFFileException  
+    *
+    * @param message a message to be reported
+    * @param cause the cause of the exception
+    * @param enableSuppression
+    * @param writableStackTrace
+    * @author Heiko Müller
+    * @version 1.0
+    * @since 1.0
+    */
     protected NoExampleVCFFileException(String message, Throwable cause,
                                boolean enableSuppression,
                                boolean writableStackTrace) {

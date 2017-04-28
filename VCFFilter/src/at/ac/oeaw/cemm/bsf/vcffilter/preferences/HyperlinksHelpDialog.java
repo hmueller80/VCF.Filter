@@ -44,12 +44,15 @@ public class HyperlinksHelpDialog extends HelpDialog{
     static final long serialVersionUID = 1L;
     
     private static final String title = "Hyperlinks help";
-    private static final String helpText = "Here, hyperlinks for searching online resources of interest can be defined for up to five selected fields. "
+    private static final String helpText = "Hyperlinks: \r\n"
+            + "Here, hyperlinks for searching online resources of interest can be defined for up to five selected fields. "
             + "VCFFilter concatenates the hyperlink parts and the selected field values to generate the hyperlink that is reported in the output in the column with the name defined in the ID field.\r\n\r\n"
             + "For example, in order to generate a hyperlink that permits searching the Entrez gene resource with the gene symbol of a variant, define "
             + "Hyperlink left = \"https://www.ncbi.nlm.nih.gov/gene/?term=\", "
             + "Search field = \"SNPEFF_GENE_NAME\", Hyperlink right = \"[sym]\". "
-            + "The hyperlink \"https://www.ncbi.nlm.nih.gov/gene/?term=CCND1[sym]\" will be reported in the output with column name SNPEFF_GENE_NAME_hyperlink for all variants of the CCND1 gene."
+            + "The hyperlink \"https://www.ncbi.nlm.nih.gov/gene/?term=CCND1[sym]\" will be reported in the output with column name SNPEFF_GENE_NAME_hyperlink for all variants of the CCND1 gene.\r\n\r\n"
+            + "Add/Remove hyperlinks:\r\n"
+            + "Choose the annotation field you want to add/remove a hyperlink for and click Add/Remove, respectively. "
             
             ;
     

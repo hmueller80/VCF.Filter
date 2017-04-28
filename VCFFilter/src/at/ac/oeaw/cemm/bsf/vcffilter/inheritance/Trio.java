@@ -40,6 +40,10 @@ public class Trio {
     String mother = "";
     String father = "";
     
+    /**
+     * 
+     * @return String trio genotypes
+     */
     public String dump(){
         return child + "_mother_" + mother + "_father_" + father;
     }

@@ -215,6 +215,10 @@ public class Relationships extends javax.swing.JDialog {
         return null;
     }    
     
+    /**
+     * Remove an individual from the list of relationships
+     * @param name name of the individual to be removed from relationships
+     */
     public void removeRelationshipForIndividual(String name){
         for(int i = 0; i < relationships.size(); i++){
             Relationship r = relationships.get(i);

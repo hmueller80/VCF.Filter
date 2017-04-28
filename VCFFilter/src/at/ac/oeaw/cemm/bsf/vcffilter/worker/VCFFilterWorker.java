@@ -115,7 +115,7 @@ public abstract class VCFFilterWorker extends SwingWorker{
     /**
      * Cancel.
      */
-    private boolean cancel = false;
+    public boolean cancel = false;
     
     /**
      * Output limit.
@@ -179,6 +179,42 @@ public abstract class VCFFilterWorker extends SwingWorker{
         for(int i = 0; i < variants.size() && i < outputlimit; i++){
             output.append(fof.formatOutput(variants.get(i)) + "\r\n");        
         }
+    }
+    
+    /**
+    * Writes variant data to provided output in the column order that the user specified.
+    * 
+    * @param variant variant
+    * @param output text area where output is written
+    * @author Heiko Müller
+    * @since 1.0
+    */
+    protected void reportAppend(VariantContext variant, JTextArea output) {    
+        
+        FormatOutputFields fof = new FormatOutputFields(outputFields, gui.getPreferences().getHyperlinks());
+        fof.setRecurrenceHash(recurrenceHash);
+        output.append(fof.formatOutput(variant) + "\r\n");     
+        //output.append("Variants found: " + variants.size() + "\r\n");
+        //output.append(fof.getOutputHeader() + "\r\n");        
+        //for (VariantContext v : variants) {                                                        
+        //    output.append(fof.formatOutput(v) + "\r\n");            
+        //}
+        //for(int i = 0; i < variants.size() && i < outputlimit; i++){
+        //    output.append(fof.formatOutput(variant) + "\r\n");        
+       // }
+    }
+    
+    /**
+    * Writes output header to TextArea.
+    * 
+    * @param output text area where output is written
+    * @author Heiko Müller
+    * @since 1.0
+    */
+    protected void reportOutputHeader(JTextArea output) {    
+        FormatOutputFields fof = new FormatOutputFields(outputFields, gui.getPreferences().getHyperlinks());
+        fof.setRecurrenceHash(recurrenceHash);          
+        output.append(fof.getOutputHeader() + "\r\n");      
     }
     
     /**
@@ -356,7 +392,8 @@ public abstract class VCFFilterWorker extends SwingWorker{
         if(q != null){
             candidates.sort(new VariantContextComparator());
             ArrayList<VariantContext> result = new ArrayList<VariantContext>();                  
-            for(VariantContext vc : candidates){                
+            for(VariantContext vc : candidates){    
+                //new Warning(gui, "" + vc.getStart());
                 if(q.match(new GenomicElement(vc))){                    
                     result.add(vc);
                 }
@@ -381,6 +418,7 @@ public abstract class VCFFilterWorker extends SwingWorker{
             candidates.sort(new VariantContextComparator());
             ArrayList<VariantContext> result = new ArrayList<VariantContext>();            
             for(VariantContext vc : candidates){
+                //new Warning(gui, "" + vc.getStart());
                 if(!q.match(new GenomicElement(vc))){
                     result.add(vc);
                 }
@@ -454,6 +492,55 @@ public abstract class VCFFilterWorker extends SwingWorker{
     }
     
     /**
+    * Filters a list of candidates for recurrence.
+    * 
+    * @param candidate list of candidates
+    * @return boolean
+    * @author Heiko Müller
+    * @since 1.0
+    */
+    protected boolean filterOnRecurrence(VariantContext candidate) {
+        if(recurrenceHash == null){
+            return true;
+        }        
+        if(gui.getRecurrenceType().equals("total")){            
+                List<String> keys = getExacVariantFormat(candidate);
+                for(String s : keys){
+                    VariantRecurrence r = recurrenceHash.get(s);
+                    if(r != null){
+                        if(Integer.parseInt(r.getFreq()) <= recurrenceCutoff){
+                            return true;                            
+                        }
+                    }
+                }
+                return false;
+        }else if(gui.getRecurrenceType().equals("het")){            
+                List<String> keys = getExacVariantFormat(candidate);
+                for(String s : keys){
+                    VariantRecurrence r = recurrenceHash.get(s);
+                    if(r != null){
+                        if(Integer.parseInt(r.getFreqHet()) <= recurrenceCutoff){
+                            return true;   
+                        }
+                    }
+                }
+                return false;
+        }else if(gui.getRecurrenceType().equals("hom")){            
+                List<String> keys = getExacVariantFormat(candidate);
+                for(String s : keys){
+                    VariantRecurrence r = recurrenceHash.get(s);
+                    if(r != null){
+                        if(Integer.parseInt(r.getFreqHom()) <= recurrenceCutoff){
+                            return true;   
+                        }
+                    }
+                }
+                return false;
+        }
+        return false;
+    }
+    
+    /**
     * Filters variants in the provided Iterator.
     * 
     * @param it variant iterator
@@ -464,6 +551,7 @@ public abstract class VCFFilterWorker extends SwingWorker{
     protected ArrayList<VariantContext> filterVCFFileIterator(CloseableIterator<VariantContext> it){     
         ArrayList<VariantContext> result = new ArrayList<VariantContext>();
         if(filters == null || filters.size() == 0){
+            //while(it.hasNext() && !cancel){    
             while(it.hasNext() && !cancel && result.size() < outputlimit){                
                 VariantContext vc = it.next();
                 result.add(vc);    
@@ -472,6 +560,7 @@ public abstract class VCFFilterWorker extends SwingWorker{
             return result;
         }
         try{
+            //while(it.hasNext() && !cancel){    
             while(it.hasNext() && !cancel && result.size() < outputlimit){            
                 boolean pass = false;
                 VariantContext vc = it.next();
@@ -527,13 +616,13 @@ public abstract class VCFFilterWorker extends SwingWorker{
         }
         if(whiteListFiles != null){
             for(File f : whiteListFiles){
-                VCFHeaderLine headerLine = new VCFHeaderLine("VCFFilter_whiteList", f.getAbsolutePath());
+                VCFHeaderLine headerLine = new VCFHeaderLine("VCFFilter_inclusiveList", f.getAbsolutePath());
                 header.addMetaDataLine(headerLine);
             }
         }
         if(blackListFiles != null){
             for(File f : blackListFiles){
-                VCFHeaderLine headerLine = new VCFHeaderLine("VCFFilter_blackList", f.getAbsolutePath());
+                VCFHeaderLine headerLine = new VCFHeaderLine("VCFFilter_exclusiveList", f.getAbsolutePath());
                 header.addMetaDataLine(headerLine);
             }
         } 
@@ -544,6 +633,59 @@ public abstract class VCFFilterWorker extends SwingWorker{
         } 
         out.close(); 
         in.close();
+    }
+    
+    /**
+    * Returns a variant context writer for one by one saving of filtered variants.
+    * 
+    * @param filters filter chain
+    * @param inputVCF input VCF file
+    * @param outputVCF output VCF file
+    * @return VariantContextWriter to write variants to VCF file
+    * @author Heiko Müller
+    * @since 1.0
+    */
+    public VariantContextWriter getVariantContextWriter(ArrayList<Filter> filters, File inputVCF, File outputVCF){
+        final VCFFileReader in = new VCFFileReader(inputVCF);
+        final VCFHeader header = in.getFileHeader(); 
+        final VariantContextWriterBuilder variantContextWriterBuilder = new VariantContextWriterBuilder();         
+        SAMSequenceDictionary sequenceDictionary = header.getSequenceDictionary(); 
+        if (sequenceDictionary == null) { 
+                throw new PicardException("The input vcf must have a sequence dictionary in order to create indexed vcf or bcfs."); 
+            } 
+        variantContextWriterBuilder.setReferenceDictionary(sequenceDictionary);   
+        variantContextWriterBuilder.setOption(Options.INDEX_ON_THE_FLY);
+        final VariantContextWriter out = variantContextWriterBuilder.setOutputFile(outputVCF).build(); 
+        variantContextWriterBuilder.setOutputFileType(VariantContextWriterBuilder.OutputType.BLOCK_COMPRESSED_VCF);
+      
+        for (final Filter filter : filters) {             
+                header.addMetaDataLine(filter.getHeaderLine());              
+        } 
+        if(recurrenceFile != null){
+            VCFHeaderLine headerLine = new VCFHeaderLine("VCFFilter_recurrence", recurrenceFile.getAbsolutePath() + "<=" + recurrenceCutoff);
+            header.addMetaDataLine(headerLine);     
+        }
+        if(whiteListFiles != null){
+            for(File f : whiteListFiles){
+                VCFHeaderLine headerLine = new VCFHeaderLine("VCFFilter_inclusiveList", f.getAbsolutePath());
+                header.addMetaDataLine(headerLine);
+            }
+        }
+        if(blackListFiles != null){
+            for(File f : blackListFiles){
+                VCFHeaderLine headerLine = new VCFHeaderLine("VCFFilter_exclusiveList", f.getAbsolutePath());
+                header.addMetaDataLine(headerLine);
+            }
+        } 
+        out.writeHeader(header);     
+        in.close();
+        return out;
+        //out.writeHeader(header);           
+        //for(VariantContext v : variants){   
+        //    out.add(v);
+        //} 
+        //out.close(); 
+        
     }
     
     /**

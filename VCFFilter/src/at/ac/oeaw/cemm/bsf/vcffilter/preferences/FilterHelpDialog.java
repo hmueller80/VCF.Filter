@@ -48,7 +48,7 @@ public class FilterHelpDialog extends HelpDialog{
             + "Here, all fields that can be filtered for are listed. "
             + "The filters listed are not loaded at start up. "
             + "To make a filter available at start up, drag it to the Loaded filters list.\r\n\r\n"
-            + "Available filters:\r\n"
+            + "Loaded filters:\r\n"
             + "Here, all filters loaded at start up are listed. "
             + "To remove a filter from start up, drag it to the Available filters list.";
     

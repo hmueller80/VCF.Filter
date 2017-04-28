@@ -720,7 +720,8 @@
                 <Property name="mnemonic" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="KeyEvent.VK_B" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="About VCFFilter"/>
+                <Property name="text" type="java.lang.String" value="About VCF.Filter"/>
+                <Property name="actionCommand" type="java.lang.String" value="About VCFFilter"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem34ActionPerformed"/>
@@ -733,7 +734,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
-    <Property name="title" type="java.lang.String" value="VCFFilter"/>
+    <Property name="title" type="java.lang.String" value="VCF.Filter"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="jMenuBar1"/>
@@ -1035,13 +1036,13 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jPanel4" pref="278" max="32767" attributes="0"/>
+                          <Component id="jPanel4" pref="283" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jPanel25" pref="275" max="32767" attributes="0"/>
+                          <Component id="jPanel25" pref="280" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel26" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jPanel27" pref="273" max="32767" attributes="0"/>
+                          <Component id="jPanel27" pref="278" max="32767" attributes="0"/>
                           <EmptySpace type="unrelated" max="32767" attributes="0"/>
                           <Component id="jPanel5" min="-2" pref="280" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
@@ -1078,7 +1079,7 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jButton2" pref="248" max="32767" attributes="0"/>
+                          <Component id="jButton2" pref="271" max="32767" attributes="0"/>
                           <Component id="jScrollPane2" alignment="1" pref="0" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
@@ -1227,7 +1228,8 @@
                     </Component>
                     <Component class="javax.swing.JRadioButton" name="jRadioButton3">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Calculate recurrence"/>
+                        <Property name="text" type="java.lang.String" value="Cohort frequency"/>
+                        <Property name="toolTipText" type="java.lang.String" value=""/>
                       </Properties>
                       <Events>
                         <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="jRadioButton3StateChanged"/>
@@ -1254,7 +1256,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel9">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Recurrence &lt;=:"/>
+                        <Property name="text" type="java.lang.String" value="Frequency &lt;=:"/>
                         <Property name="toolTipText" type="java.lang.String" value="number of alleles in cohort"/>
                       </Properties>
                     </Component>
@@ -1328,7 +1330,7 @@
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jButton21" max="32767" attributes="0"/>
-                          <Component id="jScrollPane10" alignment="0" pref="245" max="32767" attributes="0"/>
+                          <Component id="jScrollPane10" alignment="0" pref="268" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
@@ -1447,7 +1449,7 @@
                   <Properties>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                        <TitledBorder title="Recurrence">
+                        <TitledBorder title="Cohort frequency">
                           <Border PropertyName="innerBorder" info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
                             <EtchetBorder/>
                           </Border>
@@ -1463,7 +1465,7 @@
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jButton23" max="32767" attributes="0"/>
-                          <Component id="jScrollPane12" alignment="0" pref="243" max="32767" attributes="0"/>
+                          <Component id="jScrollPane12" alignment="0" pref="266" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
@@ -2250,7 +2252,7 @@
                           <Properties>
                             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                                <TitledBorder title="Recurrence files">
+                                <TitledBorder title="Cohort frequency files">
                                   <Border PropertyName="innerBorder" info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
                                     <EtchetBorder/>
                                   </Border>
@@ -2271,7 +2273,7 @@
                     </Container>
                     <Component class="javax.swing.JLabel" name="jLabel7">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Recurrence &lt;=:"/>
+                        <Property name="text" type="java.lang.String" value="Frequency &lt;=:"/>
                         <Property name="toolTipText" type="java.lang.String" value="number of alleles in cohort"/>
                       </Properties>
                     </Component>

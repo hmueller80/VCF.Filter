@@ -1472,7 +1472,7 @@ public class VCFFilter extends javax.swing.JFrame {
         jPopupMenu15.add(jMenuItem33);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("VCFFilter");
+        setTitle("VCF.Filter");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -1620,7 +1620,7 @@ public class VCFFilter extends javax.swing.JFrame {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
+            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
@@ -1640,7 +1640,8 @@ public class VCFFilter extends javax.swing.JFrame {
             }
         });
 
-        jRadioButton3.setText("Calculate recurrence");
+        jRadioButton3.setText("Cohort frequency");
+        jRadioButton3.setToolTipText("");
         jRadioButton3.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jRadioButton3StateChanged(evt);
@@ -1662,7 +1663,7 @@ public class VCFFilter extends javax.swing.JFrame {
             }
         });
 
-        jLabel9.setText("Recurrence <=:");
+        jLabel9.setText("Frequency <=:");
         jLabel9.setToolTipText("number of alleles in cohort");
 
         jTextField3.setText("5");
@@ -1784,7 +1785,7 @@ public class VCFFilter extends javax.swing.JFrame {
         jPanel25Layout.setHorizontalGroup(
             jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jButton21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
+            .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
         );
         jPanel25Layout.setVerticalGroup(
             jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1831,7 +1832,7 @@ public class VCFFilter extends javax.swing.JFrame {
                 .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
         );
 
-        jPanel27.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Recurrence"));
+        jPanel27.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Cohort frequency"));
         jPanel27.setPreferredSize(new java.awt.Dimension(170, 99));
 
         jButton23.setText("Open");
@@ -1860,7 +1861,7 @@ public class VCFFilter extends javax.swing.JFrame {
         jPanel27Layout.setHorizontalGroup(
             jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jButton23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane12, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
+            .addComponent(jScrollPane12, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
         );
         jPanel27Layout.setVerticalGroup(
             jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1876,13 +1877,13 @@ public class VCFFilter extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel25, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+                .addComponent(jPanel25, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel26, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel27, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
+                .addComponent(jPanel27, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -2238,7 +2239,7 @@ public class VCFFilter extends javax.swing.JFrame {
         });
         jScrollPane13.setViewportView(jList10);
 
-        jList11.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Recurrence files"));
+        jList11.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Cohort frequency files"));
         jList11.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jList11.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -2252,7 +2253,7 @@ public class VCFFilter extends javax.swing.JFrame {
         });
         jScrollPane14.setViewportView(jList11);
 
-        jLabel7.setText("Recurrence <=:");
+        jLabel7.setText("Frequency <=:");
         jLabel7.setToolTipText("number of alleles in cohort");
 
         jTextField4.setText("5");
@@ -2687,7 +2688,8 @@ public class VCFFilter extends javax.swing.JFrame {
 
         jMenuItem34.setIcon(new javax.swing.ImageIcon(getClass().getResource("/at/ac/oeaw/cemm/bsf/vcffilter/icon/about.png"))); // NOI18N
         jMenuItem34.setMnemonic(KeyEvent.VK_B);
-        jMenuItem34.setText("About VCFFilter");
+        jMenuItem34.setText("About VCF.Filter");
+        jMenuItem34.setActionCommand("About VCFFilter");
         jMenuItem34.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem34ActionPerformed(evt);
@@ -4854,6 +4856,7 @@ public class VCFFilter extends javax.swing.JFrame {
                 r.setFather("None");
                 relationships.addRelationship(r);
             }else if(selectedAffectedVCFFiles != null && selectedUnaffectedVCFFiles != null){
+                //r.addSelectableValue("NA");
                 for(int i = 0; i < selectedAffectedVCFFiles.length; i++){
                     if(!r.isValuePresent(selectedAffectedVCFFiles[i].getName())){
                         r.addSelectableValue(selectedAffectedVCFFiles[i].getName());
@@ -5673,6 +5676,12 @@ public class VCFFilter extends javax.swing.JFrame {
         }
     }    
       
+    /**
+    * Sets all items in this JList to selected
+    * @param jl the JList    *
+    * @author Heiko Müller
+    * @since 1.0
+    */
     public void setAllItemsSelected(JList jl){
         int[] selected = new int[jl.getModel().getSize()];
         for (int i = 0; i < selected.length; i++) {                
@@ -5858,6 +5867,8 @@ public class VCFFilter extends javax.swing.JFrame {
                         JComboBox jbf = r.getFatherFileDropdownList();
                         jbm.removeAllItems();
                         jbf.removeAllItems();
+                        jbm.addItem("NA");
+                        jbf.addItem("NA");
                         for(int i = 0; i < jList5.getModel().getSize(); i++){
                             jbm.addItem(jList5.getModel().getElementAt(i).toString());
                             jbf.addItem(jList5.getModel().getElementAt(i).toString());
@@ -6531,6 +6542,18 @@ public class VCFFilter extends javax.swing.JFrame {
     public File getVcfOutputFile() {
         return vcfOutputFile;
     }
+    
+    /**
+    * Returns true if VCF output is selected.
+    * False otherwise
+    * 
+    * @return boolean
+    * @author Heiko Müller
+    * @since 1.0
+    */
+    public boolean getIsVcfOutput() {
+        return jRadioButton2.isSelected();
+    }
 
     /**
     * Returns the VCF output JRadioButton on the Filter tab.
@@ -6779,7 +6802,7 @@ public class VCFFilter extends javax.swing.JFrame {
             userdir = PREFERENCES.getUserdir();
         }
         if(userdir != null){
-            File recurrenceDir = new File(userdir + File.separator + "recurrence_files");
+            File recurrenceDir = new File(userdir + File.separator + "cohort_frequency_files");
             if(!recurrenceDir.exists()){
                 boolean created = recurrenceDir.mkdir();
                 if(created){
@@ -7163,22 +7186,54 @@ public class VCFFilter extends javax.swing.JFrame {
         jButton5.setEnabled(enabled);
     }
     
+    /**
+    * Getter for the Example button.
+    * 
+    * @return JButton
+    * @author Heiko Müller
+    * @since 1.0
+    */
     public JButton getExampleButton(){
         return jButton16;
     }
     
+    /**
+    * Getter for the family analysis Example button.
+    * 
+    * @return JButton
+    * @author Heiko Müller
+    * @since 1.0
+    */
     public JButton getFamilyExampleButton(){
         return jButton25;
     }
     
+    /**
+    * Getter for the search tab Example button.
+    * 
+    * @return JButton
+    * @author Heiko Müller
+    * @since 1.0
+    */
     public JButton getSearchExampleButton(){
         return jButton24;
     }
     
+    /**
+    * Getter for the recurrence type (hom/het/total).
+    * 
+    * @return String
+    * @author Heiko Müller
+    * @since 1.0
+    */
     public String getRecurrenceType(){
         return recurrenceType;
     }
     
+    /**
+     * @param vcffile
+     * @return boolean
+     */
     private boolean testHeaderLinesConsistency(File vcffile) {
         VCFFileReader vcf = new VCFFileReader(vcffile);
         Iterator<VCFInfoHeaderLine> it = vcf.getFileHeader().getInfoHeaderLines().iterator();

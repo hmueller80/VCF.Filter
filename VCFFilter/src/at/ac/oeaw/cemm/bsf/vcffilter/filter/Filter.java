@@ -831,6 +831,10 @@ public abstract class Filter extends JPanel{
         }
     }
     
+    /**
+     * 
+     * @param s the operator string
+     */
     public void testOperator(String s){
         if(s.startsWith(">=") || s.startsWith("<=")){
             new Warning(gui, "Illegal operator detected.");

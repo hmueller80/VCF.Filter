@@ -43,10 +43,11 @@ public class FilterDefaultsHelpDialog extends HelpDialog{
      */
     static final long serialVersionUID = 1L;
     private static final String title = "Filter defaults help";
-    private static final String helpText = "For all available filters you can define default search criteria to be loaded at start up. "
+    private static final String helpText = "Filter Defaults "
+            + "For all available filters you can define default search criteria to be loaded at start up. "
             + "The filter type numeric / non numeric is displayed. For numeric filters, operators (<, =, >) are expected. "
             + "Only one operator at the time is allowed, i.e. >= is not valid. "
-            + "For non numeric filters, wild card searches using the * symbol (one per field) are possible. "           
+            + "For non numeric filters, wild card searches using the * symbol are possible. "           
             ;
     
     

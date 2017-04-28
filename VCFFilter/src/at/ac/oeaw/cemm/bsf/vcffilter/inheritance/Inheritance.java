@@ -1186,6 +1186,13 @@ public class Inheritance {
         return result;
     }
 
+    /**
+     * 
+     * @param candidates candidates list to be processed
+     * @param unaffected hash of unaffected individuals
+     * @param genesymbolfield the gene symbol annotation field
+     * @return ArrayList&#60;VariantContext&#62; processed candidates list
+     */
     public static ArrayList<VariantContext> removeCompoundHeterozygotesWithGenotypesIdenticalToUnaffected(ArrayList<VariantContext> candidates, ArrayList<Hashtable<String, VariantContext>> unaffected, String genesymbolfield) {
         Hashtable<String, Hashtable<String, VariantContext>> counts = new Hashtable<String, Hashtable<String, VariantContext>>();
         for (VariantContext v : candidates) {

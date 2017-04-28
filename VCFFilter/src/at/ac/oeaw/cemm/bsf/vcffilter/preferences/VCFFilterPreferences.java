@@ -972,7 +972,7 @@ public class VCFFilterPreferences extends javax.swing.JDialog {
         jPanel13.setPreferredSize(new java.awt.Dimension(460, 105));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        jLabel5.setText("Recurrence files");
+        jLabel5.setText("Frequency files");
 
         jButton5.setText("Open");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -1027,7 +1027,7 @@ public class VCFFilterPreferences extends javax.swing.JDialog {
         jPanel14.setPreferredSize(new java.awt.Dimension(460, 82));
 
         jLabel20.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        jLabel20.setText("White lists");
+        jLabel20.setText("Inclusion lists");
 
         jButton1.setText("Open");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -1038,7 +1038,7 @@ public class VCFFilterPreferences extends javax.swing.JDialog {
 
         jTextField7.setEditable(false);
 
-        jLabel21.setText("Matching variants are kept.");
+        jLabel21.setText("Variants overlapping genomic regions in inclusion lists are reported.");
 
         javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
         jPanel14.setLayout(jPanel14Layout);
@@ -1050,12 +1050,12 @@ public class VCFFilterPreferences extends javax.swing.JDialog {
                     .addComponent(jSeparator4)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel14Layout.createSequentialGroup()
                         .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel14Layout.createSequentialGroup()
-                        .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -1078,7 +1078,7 @@ public class VCFFilterPreferences extends javax.swing.JDialog {
         jPanel15.setPreferredSize(new java.awt.Dimension(460, 76));
 
         jLabel22.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        jLabel22.setText("Black lists");
+        jLabel22.setText("Exclusion lists");
 
         jButton2.setText("Open");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -1089,7 +1089,7 @@ public class VCFFilterPreferences extends javax.swing.JDialog {
 
         jTextField8.setEditable(false);
 
-        jLabel23.setText("Matching variants are discarded.");
+        jLabel23.setText("Variants overlapping genomic regions in exclusion lists are discarded.");
 
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
         jPanel15.setLayout(jPanel15Layout);
@@ -1099,14 +1099,14 @@ public class VCFFilterPreferences extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel15Layout.createSequentialGroup()
-                        .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel15Layout.createSequentialGroup()
+                        .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel15Layout.createSequentialGroup()
-                        .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel15Layout.setVerticalGroup(
@@ -2169,6 +2169,8 @@ public class VCFFilterPreferences extends javax.swing.JDialog {
             new HyperlinksHelpDialog(gui, true);
         } else if (jTabbedPane1.getSelectedIndex() == 6) {
             new ApplicationDesignHelpDialog(gui, true);
+        }else if (jTabbedPane1.getSelectedIndex() == 7) {
+            new OutputLimitHelpDialog(gui, true);
         }
     }//GEN-LAST:event_jLabel26MouseEntered
 
@@ -2238,6 +2240,11 @@ public class VCFFilterPreferences extends javax.swing.JDialog {
         return null;
     }
 
+    /**
+     * Getter for Format header line
+     * @param id the ide of the Format header lines
+     * @return VCFFormatHeaderLine
+     */
     public VCFFormatHeaderLine getFormatHeaderLine(String id) {
         Iterator<VCFFormatHeaderLine> it = formatHeaderLines.iterator();
         while (it.hasNext()) {
@@ -2765,6 +2772,10 @@ public class VCFFilterPreferences extends javax.swing.JDialog {
         return infoHeaderLines;
     }
 
+    /**
+     * Getter for Format header lines collection
+     * @return Collection&#60;VCFFormatHeaderLine&#62;
+     */
     public Collection<VCFFormatHeaderLine> getFormatHeaderLines() {
         if(formatHeaderLines == null){
             initVCFHeaderLinesCollection();
@@ -2772,6 +2783,10 @@ public class VCFFilterPreferences extends javax.swing.JDialog {
         return formatHeaderLines;
     }
 
+    /**
+     * Getter for compound header lines collection
+     * @return ArrayList&#60;VCFCompoundHeaderLine&#62; Format and Info header lines
+     */
     public ArrayList<VCFCompoundHeaderLine> getCompoundHeaderLines() {
         initVCFHeaderLinesCollection();        
         compoundHeaderLines = new ArrayList<VCFCompoundHeaderLine>();

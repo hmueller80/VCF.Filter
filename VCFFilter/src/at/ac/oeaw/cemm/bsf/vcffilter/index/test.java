@@ -27,6 +27,11 @@ import picard.PicardException;
  */
 public class test {
 
+    /**
+     * 
+     * @param inputtextvcf
+     * @return VariantContextWriter
+     */
     public static VariantContextWriter getVariantContextWriterVCF(File inputtextvcf) {
         VCFFileReader reader = new VCFFileReader(inputtextvcf, false);
         VCFHeader header = reader.getFileHeader();
@@ -46,6 +51,11 @@ public class test {
         return sample_writer;
     }
     
+    /**
+     * 
+     * @param inputtextvcf
+     * @return VariantContextWriter
+     */
     public static VariantContextWriter getVariantContextWriterVCFGZ(File inputtextvcf) {
         VCFFileReader reader = new VCFFileReader(inputtextvcf, false);
         VCFHeader header = reader.getFileHeader();
@@ -68,6 +78,9 @@ public class test {
         return sample_writer;
     }
 
+    /**
+     * index VCF file
+     */
     public static void indexVCF() {
         File f = new File("C:\\Temp\\index\\testvcf.vcf");
 
@@ -89,6 +102,9 @@ public class test {
         }
     }
     
+    /**
+     * index VCF file
+     */
     public static void indexVCFGZ() {
         File f = new File("C:\\Temp\\index\\1148.vcf.gz");
 
@@ -110,6 +126,10 @@ public class test {
         }
     }    
 
+    /**
+     * 
+     * @param a input parameters
+     */
     public static void main(String[] a) {
         indexVCFGZ();
     }

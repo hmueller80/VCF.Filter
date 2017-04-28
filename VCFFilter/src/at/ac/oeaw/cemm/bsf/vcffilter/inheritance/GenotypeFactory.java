@@ -43,6 +43,10 @@ public class GenotypeFactory {
     static String[] mother = {"A", "C", "G", "T"};
     static String[] father = {"A", "C", "G", "T"};
     
+    /**
+     * 
+     * @return ArrayList&#60;Trio&#62; mated alleles list
+     */
     public static ArrayList<Trio> mateAlleles(){
         ArrayList<Trio> result = new ArrayList<Trio>();
         for(String m : mother){
@@ -57,6 +61,10 @@ public class GenotypeFactory {
         return result;
     }
     
+    /**
+     * 
+     * @return mated genotypes list
+     */
     public static ArrayList<Trio> mateGenotypes(){
         ArrayList<Trio> result = new ArrayList<Trio>();
         for(String[] m : genotypes){
@@ -105,6 +113,10 @@ public class GenotypeFactory {
         return result;
     }
     
+    /**
+     * 
+     * @param a input parameters
+     */
     public static void main(String[] a){
         //ArrayList<Trio> trios = mateAlleles();
         ArrayList<Trio> trios = mateGenotypes();

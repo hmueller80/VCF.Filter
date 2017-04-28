@@ -44,33 +44,40 @@ public class FileHelpDialog extends HelpDialog{
     static final long serialVersionUID = 1L;
     
     private static final String title = "Files help";
-    private static final String helpText = "Sample VCF file:\r\n"
+    private static final String helpText = "Example VCF file:\r\n"
             + "Setting this file is required for VCFFilter to start up successfully. "
             + "The file must contain a valid VCF header. "
-            + "VCFFilter will create filters for all Info header fields "
+            + "VCFFilter will create filters for all Info and Format header fields "
             + "as well as for the standard fields CHROM, POS, ID, REF, ALT, QUAL, and FILTER.\r\n\r\n"
-            + "VCFDirecory:\r\n"
+            + "VCF direcory:\r\n"
             + "This is the directory where VCFFilter expects VCF files. "
             + "When VCF files are opened, the filechooser will start listing files found in this directory "
             + "This directory can be any directory on yourfile system "
             + "and is initially set to the directory where the sample VCF file is located. "
             + "We suggest using the VCFData directory that is located in the "
             + "same directory where the VCFFilter.jar is located.\r\n\r\n"
-            + "Recurrence files:\r\n"
-            + "Recurrence files list the frequency of variants in your cohort. "
-            + "Recurrence files can be generated using the filter tab with the \"Calculate recurrence\" option "
+            + "Frequency files:\r\n"
+            + "Frequency files list the frequency of variants in your cohort. "
+            + "Frequency files can be generated using the filter tab with the \"Calculate cohort frequency\" option "
             + "and opening all VCF files of your cohort. Current filter criteria will be applied "
             + "and all variants passing the filter will be recorded with their observed frequency in heterozygous and homozygous state. "
-            + "Recurrence filtering effectivly eliminates frequent variants such as those found due to erroneous reference sequence assembly "
-            + "or etnicity related variants from the filter results.\r\n\r\n"
-            + "White lists:\r\n"
-            + "White lists contain genomic intervals of interest such as exons or homozygosity regions. "
+            + "Cohort frequency filtering effectivly eliminates frequent variants such as those found due to erroneous reference sequence assembly "
+            + "or ethnicity related variants from the filter results.\r\n\r\n"
+            + "Inclusion lists:\r\n"
+            + "Inclusion lists contain genomic intervals of interest such as exons or homozygosity regions. "
             + "Bed format and PLINK hom format are currently accepted. "
-            + "When white list filtering is active, only variants in these regions will be reported. "
-            + "Note that white list filtering also significantly speeds up VCF filtering.\r\n\r\n"
-            + "Black lists:\r\n"
-            + "Black lists contain genomic intervals to be ignored. Variants in these regions will not be reported. "
-            + "Bed format and PLINK hom format are currently accepted. ";
+            + "When inclusion list filtering is active, only variants overlapping these regions will be reported. "
+            + "Base coordinates are inclusive. A variant at position chr1:1000 "
+            + "will be reported using intervals chr1:999-1000, chr1:1000-1000, or chr1:1000-1001 in an inclusion list. "
+            + "Note that inclusion list filtering also significantly speeds up VCF filtering.\r\n\r\n"
+            + "Exclusion lists:\r\n"
+            + "Exclusion lists contain genomic intervals to be ignored. Variants in these regions will not be reported. "
+            + "Exclusion lists are dominant over inclusion lists. "            
+            + "Bed format and PLINK hom format are currently accepted. "
+            + "Base coordinates are inclusive. A variant at position chr1:1000 "
+            + "will be discarded using intervals chr1:999-1000, chr1:1000-1000, or chr1:1000-1001 in an exclusion list. ";
+            
+           
     
     
     /**

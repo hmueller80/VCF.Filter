@@ -100,9 +100,9 @@ public class Relationship extends javax.swing.JPanel {
         jTextField1.setText(this.individual);
         buttonGroup1.add(jRadioButton1);
         buttonGroup1.add(jRadioButton2);
-        if(unaffected != null && affected != null){
-            jComboBox1.addItem("NA");
-            jComboBox2.addItem("NA");
+        jComboBox1.addItem("NA");
+        jComboBox2.addItem("NA");
+        if(unaffected != null && affected != null){            
             for(File f : unaffected){
                 jComboBox1.addItem(f.getName());
                 jComboBox2.addItem(f.getName());
@@ -295,18 +295,34 @@ public class Relationship extends javax.swing.JPanel {
         jComboBox2.addItem(s);
     }
 
+    /**
+     * Getter for mother hash
+     * @return Hashtable<String, VariantContext> mother hash
+     */
     public Hashtable<String, VariantContext> getMotherHash() {
         return motherHash;
     }
 
+    /**
+     * Setter for mother hash
+     * @param motherHash 
+     */
     public void setMotherHash(Hashtable<String, VariantContext> motherHash) {
         this.motherHash = motherHash;
     }
 
+    /**
+     * Getter for father hash
+     * @return Hashtable<String, VariantContext>
+     */
     public Hashtable<String, VariantContext> getFatherHash() {
         return fatherHash;
     }
 
+    /**
+     * Setter for father hash
+     * @param fatherHash 
+     */
     public void setFatherHash(Hashtable<String, VariantContext> fatherHash) {
         this.fatherHash = fatherHash;
     }
@@ -468,10 +484,18 @@ public class Relationship extends javax.swing.JPanel {
     }//GEN-LAST:event_jRadioButton2ItemStateChanged
 
 
+    /**
+     * Getter for mother file dropdown list.
+     * @return JComboBox
+     */
     public JComboBox getMotherFileDropdownList(){
         return jComboBox1;
     }
     
+    /**
+     * Getter for father file dropdown list
+     * @return 
+     */
     public JComboBox getFatherFileDropdownList(){
         return jComboBox2;
     }

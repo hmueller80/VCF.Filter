@@ -45,6 +45,11 @@ import java.util.Iterator;
  */
 public class test {
     
+    /**
+     * 
+     * @param inputtextvcf
+     * @return VariantContextWriter
+     */    
     public static VariantContextWriter getVariantContextWriter(File inputtextvcf){
         //VCFFileReader reader = new VCFFileReader(inputtextvcf, false);
         
@@ -62,6 +67,10 @@ public class test {
         return sample_writer;
     }
     
+    /**
+     * 
+     * @param a input parameters
+     */
     public static void main(String[] a){
         VCFFileReader reader = new VCFFileReader(new File("C:\\Temp\\Case1.vcf"), false);
         System.out.println(reader.getFileHeader().toString());

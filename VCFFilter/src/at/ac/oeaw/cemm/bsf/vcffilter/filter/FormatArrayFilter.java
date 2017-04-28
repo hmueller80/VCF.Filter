@@ -94,6 +94,12 @@ public abstract class FormatArrayFilter extends FormatFilter{
         return result;
     }
     
+    /**
+     * 
+     * @param vc variant context object
+     * @param gt genotype object
+     * @return List&#60;Integer&#62; allele indices
+     */
     protected List<Integer> getAlleleIndices(VariantContext vc, Genotype gt) {
         List<Integer> result = new ArrayList<Integer>();
         List<Allele> alleles = gt.getAlleles();
@@ -128,6 +134,12 @@ public abstract class FormatArrayFilter extends FormatFilter{
         return result;
     }
     
+    /**
+     * 
+     * @param vc variant context
+     * @param gt genotype
+     * @return List&#60;Integer&#62; allele indices
+     */
     protected List<Integer> getAlleleIndicesIncludingRefAllele(VariantContext vc, Genotype gt) {
         List<Integer> result = new ArrayList<Integer>();
         List<Allele> alleles = gt.getAlleles();

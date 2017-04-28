@@ -397,10 +397,12 @@ public class Query implements Serializable{
 
             for(int i = index; i < v.size(); i++){
                 region = v.elementAt(i);
-                if(query.START >= region.END){
+                //if(query.START >= region.END){
+                if(query.START > region.END){
                     region = null;
                     continue;
-                }else if(query.END <= region.START){
+                //}else if(query.END <= region.START){
+                }else if(query.END < region.START){
                     region = null;
                     break;
                 }else{

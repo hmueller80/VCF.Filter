@@ -24,6 +24,12 @@ import java.util.Iterator;
  */
 public class IndexedVCFFileWriter {
     
+    /**
+     * 
+     * @param inputVCFFile
+     * @param overwriteInputFile
+     * @return boolean true if index file is present
+     */
     public static boolean index(File inputVCFFile, boolean overwriteInputFile){
         
         if(inputVCFFile.getName().endsWith("vcf")){
@@ -38,6 +44,12 @@ public class IndexedVCFFileWriter {
         }        
     }
     
+    /**
+     * 
+     * @param inputTextVCF sample VCF file for reading header information
+     * @param overwriteInputFile true or false, currently, no overwriting is implemented
+     * @return VariantContextWriter to write variants to VCF file
+     */
     private static VariantContextWriter getVariantContextWriterVCF(File inputTextVCF, boolean overwriteInputFile) {
         VCFFileReader reader = new VCFFileReader(inputTextVCF, false);
         VCFHeader header = reader.getFileHeader();
@@ -61,6 +73,12 @@ public class IndexedVCFFileWriter {
         return sample_writer;
     }
     
+    /**
+     * 
+     * @param inputCompressedTextVCF input VCF file for reading header lines
+     * @param overwriteInputFile true or false, currently, no overwriting is implemented
+     * @return VariantContextWriter to write variants to VCF file
+     */
     private static VariantContextWriter getVariantContextWriterVCFGZ(File inputCompressedTextVCF, boolean overwriteInputFile) {
         VCFFileReader reader = new VCFFileReader(inputCompressedTextVCF, false);
         VCFHeader header = reader.getFileHeader();
@@ -86,6 +104,11 @@ public class IndexedVCFFileWriter {
         return sample_writer;
     }
     
+    /**
+     * 
+     * @param f File to be indexed
+     * @param overwriteInputFile true or false, currently, no overwriting is implemented
+     */
     private static void indexVCF(File f, boolean overwriteInputFile) {
         if (f.getName().endsWith(".vcf")) {
             VariantContextWriter writer = null;
@@ -122,6 +145,11 @@ public class IndexedVCFFileWriter {
         }
     }
     
+    /**
+     * 
+     * @param f File to be indexed
+     * @param overwriteInputFile true or false, currently, no overwriting is implemented
+     */
     private static void indexVCFGZ(File f, boolean overwriteInputFile) {        
 
         if (f.getName().endsWith(".vcf.gz")) {
@@ -156,6 +184,10 @@ public class IndexedVCFFileWriter {
         }
     }
     
+    /**
+     * 
+     * @param a input parameters
+     */
     public static void main(String[] a) {
         //IndexedVCFFileWriter.index(new File("C:\\Temp\\index\\1148.vcf.gz"), false);
         //IndexedVCFFileWriter.index(new File("C:\\Temp\\index\\testvcf.vcf"), false);
