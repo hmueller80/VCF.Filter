@@ -297,7 +297,7 @@ public class Relationship extends javax.swing.JPanel {
 
     /**
      * Getter for mother hash
-     * @return Hashtable<String, VariantContext> mother hash
+     * @return Hashtable&#60;String, VariantContext&#62; mother hash
      */
     public Hashtable<String, VariantContext> getMotherHash() {
         return motherHash;
@@ -305,7 +305,7 @@ public class Relationship extends javax.swing.JPanel {
 
     /**
      * Setter for mother hash
-     * @param motherHash 
+     * @param motherHash mother hash of variants
      */
     public void setMotherHash(Hashtable<String, VariantContext> motherHash) {
         this.motherHash = motherHash;
@@ -313,7 +313,7 @@ public class Relationship extends javax.swing.JPanel {
 
     /**
      * Getter for father hash
-     * @return Hashtable<String, VariantContext>
+     * @return Hashtable&#60;String, VariantContext&#62;
      */
     public Hashtable<String, VariantContext> getFatherHash() {
         return fatherHash;
@@ -321,7 +321,7 @@ public class Relationship extends javax.swing.JPanel {
 
     /**
      * Setter for father hash
-     * @param fatherHash 
+     * @param fatherHash father hash of variants
      */
     public void setFatherHash(Hashtable<String, VariantContext> fatherHash) {
         this.fatherHash = fatherHash;
@@ -486,7 +486,7 @@ public class Relationship extends javax.swing.JPanel {
 
     /**
      * Getter for mother file dropdown list.
-     * @return JComboBox
+     * @return JComboBox dropdown list of files to chose mother from
      */
     public JComboBox getMotherFileDropdownList(){
         return jComboBox1;
@@ -494,7 +494,7 @@ public class Relationship extends javax.swing.JPanel {
     
     /**
      * Getter for father file dropdown list
-     * @return 
+     * @return JComboBox dropdown list of files to choose father from
      */
     public JComboBox getFatherFileDropdownList(){
         return jComboBox2;

@@ -26,8 +26,8 @@ public class IndexedVCFFileWriter {
     
     /**
      * 
-     * @param inputVCFFile
-     * @param overwriteInputFile
+     * @param inputVCFFile input VCF file
+     * @param overwriteInputFile true or false, currently no overwriting is implemented
      * @return boolean true if index file is present
      */
     public static boolean index(File inputVCFFile, boolean overwriteInputFile){

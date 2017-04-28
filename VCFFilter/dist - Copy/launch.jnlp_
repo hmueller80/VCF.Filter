@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jnlp codebase="https://biomedical-sequencing.at/VCFFilter/VCFFilter/" href="launch.jnlp" spec="1.0+">
+    <information>
+        <title>VCFFilter</title>
+        <vendor>hmueller</vendor>
+        <homepage href=""/>
+        <description>VCFFilter</description>
+        <description kind="short">VCFFilter</description>
+        
+        
+    <icon href="logoVCFF.png" kind="default"/>
+<offline-allowed/>
+</information>
+    <update check="background"/>
+    <security>
+<all-permissions/>
+</security>
+    <resources>
+        <j2se java-vm-args="-Duser.language=US" version="1.8+"/>
+        <jar href="VCFFilter.jar" main="true"/>
+        
+        
+    <jar href="lib/htsjdk_631.jar"/>
+<jar href="lib/picard-2.5.0-gradle-4-gc6e4bce-SNAPSHOT.jar"/>
+<extension href="htsjdk_631.jar" name="htsjdk" version=""/>
+<extension href="picard-2.5.0-gradle-4-gc6e4bce-SNAPSHOT.jar" name="picard" version=""/>
+</resources>
+    <application-desc main-class="at.ac.oeaw.cemm.bsf.vcffilter.VCFFilter">
+        
+    </application-desc>
+</jnlp>

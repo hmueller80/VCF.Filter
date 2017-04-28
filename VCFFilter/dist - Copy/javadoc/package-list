@@ -1,0 +1,11 @@
+at.ac.oeaw.cemm.bsf.vcffilter
+at.ac.oeaw.cemm.bsf.vcffilter.excelparser
+at.ac.oeaw.cemm.bsf.vcffilter.filter
+at.ac.oeaw.cemm.bsf.vcffilter.genomeutils
+at.ac.oeaw.cemm.bsf.vcffilter.index
+at.ac.oeaw.cemm.bsf.vcffilter.inheritance
+at.ac.oeaw.cemm.bsf.vcffilter.noprefsstartup
+at.ac.oeaw.cemm.bsf.vcffilter.outputformat
+at.ac.oeaw.cemm.bsf.vcffilter.preferences
+at.ac.oeaw.cemm.bsf.vcffilter.vcftoimage
+at.ac.oeaw.cemm.bsf.vcffilter.worker

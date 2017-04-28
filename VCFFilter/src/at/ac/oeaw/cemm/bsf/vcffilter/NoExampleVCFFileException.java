@@ -91,8 +91,8 @@ public class NoExampleVCFFileException extends RuntimeException{
     *
     * @param message a message to be reported
     * @param cause the cause of the exception
-    * @param enableSuppression
-    * @param writableStackTrace
+    * @param enableSuppression enableSuppression
+    * @param writableStackTrace writableStackTrace
     * @author Heiko Müller
     * @version 1.0
     * @since 1.0

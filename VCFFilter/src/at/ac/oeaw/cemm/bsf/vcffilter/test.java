@@ -47,8 +47,8 @@ public class test {
     
     /**
      * 
-     * @param inputtextvcf
-     * @return VariantContextWriter
+     * @param inputtextvcf sample VCF file to read header
+     * @return VariantContextWriter to write variants to VCF file
      */    
     public static VariantContextWriter getVariantContextWriter(File inputtextvcf){
         //VCFFileReader reader = new VCFFileReader(inputtextvcf, false);
